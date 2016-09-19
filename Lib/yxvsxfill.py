@@ -1,5 +1,8 @@
 from core import VCSaddon
-import cdms2,MV2,vcs,vcsaddons,numpy
+import vcs
+if vcs.has_cdms:
+    import cdms2,MV2
+import vcsaddons,numpy
 
 class Gyf(VCSaddon):
     def __init__(self,name=None,source='default',x=None,template = None):

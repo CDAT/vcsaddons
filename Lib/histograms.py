@@ -1,8 +1,9 @@
 from core import VCSaddon
-import cdms2
-import MV2
 import numpy
 import vcs
+if vcs.has_cdms:
+    import cdms2
+    import MV2
 import vcsaddons
 
 
