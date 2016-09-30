@@ -254,6 +254,15 @@ class Gpc(vcsaddons.core.VCSaddon):
 
         t.blank()
         t.data.priority = 1
+        # Now draws the legend
+        dx = abs(t.legend.x2 - t.legend.x1)
+        dy = abs(t.legend.y2 - t.legend.y1)
+        if dy>dx: # vertical legend
+            V = True
+            d = dy/(nlines+1.)
+        else:
+            V = False
+            d = dx/(nlines+1.)
         for i in range(nlines):
             l = vcs.create1d()
             l.colormap = self.colormap
@@ -266,6 +275,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             l.datawc_y1 = 0.
             l.datawc_y2 = 1.
             x.plot(data[:,i],t,l,bg=bg)
+
 
 
 
