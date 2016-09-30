@@ -88,8 +88,9 @@ class Gpc(vcsaddons.core.VCSaddon):
                 yt.append(Y)
                 d1 = abs(self.template.ytic1.x2-self.template.ytic1.x1)
                 mn = min(self.template.data.x1,self.template.data.x2)
-                dt = self.template.ylabel1.x-mn
+                dt = mn - self.template.ylabel1.x
                 xs1.append([x-d1,x])
+                print "DT:",dt
                 xt.append(x-dt)
                 if i==0:
                     xe1.append([self.template.data.x1-d1,self.template.data.x1])
@@ -114,8 +115,8 @@ class Gpc(vcsaddons.core.VCSaddon):
         le2.viewport = [0,1,self.template.data.y1, self.template.data.y2]
         txt.viewport = l.viewport
         txte.viewport = le1.viewport
-        l1.x = xs1
-        l1.y = ys
+        l1.x = xs1+[[0,1,1,0]]
+        l1.y = ys+[[0,0,1,1]]
         l2.x = xs2
         l2.y = ys
         le1.x = xe1
