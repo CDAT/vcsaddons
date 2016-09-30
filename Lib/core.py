@@ -53,6 +53,7 @@ class VCSaddon(object):
             self.color_2 = 239
             self.legend = None
             self.projection='linear'
+            self.colormap = "default"
         else:
             if isinstance(source, (str, unicode)):
                 gm = vcsaddons.gms[self.g_type].get(source,None)
