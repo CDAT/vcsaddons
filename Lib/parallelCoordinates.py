@@ -44,25 +44,32 @@ class Gpc(vcsaddons.core.VCSaddon):
         print 'xaxisconvert = ',self.xaxisconvert
         print 'yaxisconvert = ',self.yaxisconvert
 
-    def drawYAxes(self,mins,maxs,labels,X,bg):
+    def drawYAxes(self,mins,maxs,labels,template,X,bg):
         N = len(labels)
-        l = X.createline(source=self.template.box1.line)
-        l.viewport = [self.template.data.x1, self.template.data.x2,
-                self.template.data.y1, self.template.data.y2]
+        l = X.createline(source=template.box1.line)
+        l.viewport = [template.data.x1, template.data.x2,
+                template.data.y1, template.data.y2]
         ys = [[0,1]]*N
         xs = [[x/(N-1.),x/(N-1.)] for x in range(N)]
 
-        l.x=xs
-        l.y=ys
-        l.priority = self.template.box1.priority
+        l.x=xs+[[0,1,1,0,0]]
+        l.y=ys+[[0,0,1,1,0]]
+        l.priority = template.box1.priority
         X.plot(l,bg=bg)
 
-        l1 = X.createline(source = self.template.ytic1.line)
-        l2 = X.createline(source = self.template.ytic2.line)
-        le1 = X.createline(source = self.template.ytic1.line)
-        le2 = X.createline(source = self.template.ytic2.line)
-        txt = X.createtext(To_source = self.template.ylabel1.textorientation,
-                Tt_source =  self.template.ylabel1.texttable)
+        l1 = X.createline(source = template.ytic1.line)
+        l2 = X.createline(source = template.ytic2.line)
+        le1 = X.createline(source = template.ytic1.line)
+        le2 = X.createline(source = template.ytic2.line)
+        txt = X.createtext(To_source = template.ylabel1.textorientation,
+                Tt_source =  template.ylabel1.texttable)
+        txt.priority = template.ylabel1.priority
+        l1.priority = template.ytic1.priority
+        l2.priority = template.ytic2.priority
+        le1.priority = template.ytic1.priority
+        le2.priority = template.ytic2.priority
+        if 0<txt.priority>=template.data.priority:
+            txt.priority+=1
         xs1 = []
         xs2 = []
         xe1 = []
@@ -80,26 +87,26 @@ class Gpc(vcsaddons.core.VCSaddon):
                 Y= (y - mins[i])/(maxs[i]-mins[i])
                 ys.append([Y,Y])
                 yt.append(Y)
-                d1 = abs(self.template.ytic1.x2-self.template.ytic1.x1)
-                mn = min(self.template.data.x1,self.template.data.x2)
-                dt = mn - self.template.ylabel1.x
+                d1 = abs(template.ytic1.x2-template.ytic1.x1)
+                mn = min(template.data.x1,template.data.x2)
+                dt = mn - template.ylabel1.x
                 xs1.append([x-d1,x])
                 xt.append(x-dt)
                 if i==0:
-                    xe1.append([self.template.data.x1-d1,self.template.data.x1])
+                    xe1.append([template.data.x1-d1,template.data.x1])
                     ye1.append([Y,Y])
                 elif i==N-1:
-                    xe2.append([self.template.data.x2+d2,self.template.data.x2])
+                    xe2.append([template.data.x2+d2,template.data.x2])
                     ye2.append([Y,Y])
-                d2 = abs(self.template.ytic2.x2-self.template.ytic2.x1)
+                d2 = abs(template.ytic2.x2-template.ytic2.x1)
                 xs2.append([x+d2,x])
         l1.viewport = l.viewport
         l2.viewport = l.viewport
-        le1.viewport = [0,1,self.template.data.y1, self.template.data.y2]
-        le2.viewport = [0,1,self.template.data.y1, self.template.data.y2]
+        le1.viewport = [0,1,template.data.y1, template.data.y2]
+        le2.viewport = [0,1,template.data.y1, template.data.y2]
         txt.viewport = l.viewport
-        l1.x = xs1+[[0,1,1,0]]
-        l1.y = ys+[[0,0,1,1]]
+        l1.x = xs1
+        l1.y = ys
         l2.x = xs2
         l2.y = ys
         le1.x = xe1
@@ -116,7 +123,7 @@ class Gpc(vcsaddons.core.VCSaddon):
         X.plot(txt,bg=bg)
 
 
-    def plot(self,array, template="default", bg=False, x=None):
+    def plot(self,array, template=None, bg=False, x=None):
         """Parallel Coordinates plot array must be of shape:
         (...,Dim1,Nlines)
         """
@@ -136,9 +143,11 @@ class Gpc(vcsaddons.core.VCSaddon):
         maxs = numpy.ma.max(data,axis=-1)
         mins = numpy.ma.min(data,axis=-1)
 
-        t = vcs.createtemplate(source=self.template.name)
-        t.blank()
-        t.data.priority = 1
+        if template is not None:
+            t = vcs.createtemplate(source=template)
+        else:
+            t = vcs.createtemplate(source=self.template)
+
         for i in range(length):
             levels = vcs.mkscale(mins[i],maxs[i])
             # Do we need to create our range
@@ -153,7 +162,7 @@ class Gpc(vcsaddons.core.VCSaddon):
                 yticlabels[i]=vcs.mklabels(levels)
         if x is None:
             x = self.x
-        self.drawYAxes(mins,maxs,yticlabels,x,bg) 
+        self.drawYAxes(mins,maxs,yticlabels,t,x,bg) 
         ax = array.getAxis(-2)
         deflbls = {}
         for i in range(length):
@@ -176,40 +185,44 @@ class Gpc(vcsaddons.core.VCSaddon):
             lbls2m = self.xmtics2
 
         for l,lbls in enumerate([lbls1,lbls1m,lbls2,lbls2m]):
-            ln = x.createline(source=self.template.xtic1.line)
+            ln = x.createline(source=t.xtic1.line)
             xs = []
             ys = []
             if l % 2 == 0:
-                txt = x.createtext(To_source = self.template.xlabel1.textorientation,
-                        Tt_source = self.template.xlabel1.texttable)
+                if l == 0:
+                    txt = x.createtext(To_source = t.xlabel1.textorientation,
+                            Tt_source = t.xlabel1.texttable)
+                else:
+                    txt = x.createtext(To_source = t.xlabel2.textorientation,
+                            Tt_source = t.xlabel2.texttable)
                 txs = []
                 tys = []
                 ts = []
             for loc in lbls:
                 xs.append([loc,loc])
                 if l==0:
-                    ys.append([self.template.xtic1.y1,self.template.xtic1.y2])
+                    ys.append([t.xtic1.y1,t.xtic1.y2])
                     txs.append(loc)
-                    tys.append(self.template.xlabel1.y)
+                    tys.append(t.xlabel1.y)
                     ts.append(lbls[loc])
-                    ln.priority = self.template.xtic1.priority
-                    txt.priority = self.template.xlabel1.priority
+                    ln.priority = t.xtic1.priority
+                    txt.priority = t.xlabel1.priority
                 elif l == 1:
-                    ys.append([self.template.xmintic1.y1,self.template.xmintic1.y2])
-                    ln.priority = self.template.xmintic1.priority
+                    ys.append([t.xmintic1.y1,t.xmintic1.y2])
+                    ln.priority = t.xmintic1.priority
                 elif l == 2:
-                    ys.append([self.template.xtic2.y1,self.template.xtic2.y2])
+                    ys.append([t.xtic2.y1,t.xtic2.y2])
                     txs.append(loc)
-                    tys.append(self.template.xlabel2.y)
+                    tys.append(t.xlabel2.y)
                     ts.append(lbls[loc])
-                    ln.priority = self.template.xtic2.priority
-                    txt.priority = self.template.xlabel2.priority
+                    ln.priority = t.xtic2.priority
+                    txt.priority = t.xlabel2.priority
                 elif l == 3:
-                    ys.append([self.template.xmintic2.y1,self.template.xmintic2.y2])
-                    ln.priority = self.template.xmintic2.priority
+                    ys.append([t.xmintic2.y1,t.xmintic2.y2])
+                    ln.priority = t.xmintic2.priority
             ln.x = xs
             ln.y = ys
-            ln.viewport = [self.template.data.x1,self.template.data.x2,0,1]
+            ln.viewport = [t.data.x1,t.data.x2,0,1]
             x.plot(ln,bg=bg)
             if l % 2 == 0:  # text on
                 txt.viewport = ln.viewport
@@ -217,11 +230,6 @@ class Gpc(vcsaddons.core.VCSaddon):
                 txt.y = tys
                 txt.string = ts
                 x.plot(txt,bg=bg)
-            array.info()
-
-
-
-
 
         # Normalizes
         deltas = maxs-mins
@@ -244,6 +252,8 @@ class Gpc(vcsaddons.core.VCSaddon):
         if self.markercolors is None:
             markercolors = vcs.getcolors(range(nlines+1))
 
+        t.blank()
+        t.data.priority = 1
         for i in range(nlines):
             l = vcs.create1d()
             l.colormap = self.colormap
