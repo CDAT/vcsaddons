@@ -18,7 +18,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             self.linetypes = ["solid"]
             self.linewidths = [1]
             self.yticlabels = ["*"]
-            self.ymtics = [""]
+            # self.ymtics = [""]
             del(self.yticlabels1)
             del(self.ymtics1)
             del(self.yticlabels2)
@@ -45,7 +45,6 @@ class Gpc(vcsaddons.core.VCSaddon):
         print 'yaxisconvert = ',self.yaxisconvert
 
     def drawYAxes(self,mins,maxs,labels,X,bg):
-        
         N = len(labels)
         l = X.createline(source=self.template.box1.line)
         l.viewport = [self.template.data.x1, self.template.data.x2,
@@ -64,8 +63,6 @@ class Gpc(vcsaddons.core.VCSaddon):
         le2 = X.createline(source = self.template.ytic2.line)
         txt = X.createtext(To_source = self.template.ylabel1.textorientation,
                 Tt_source =  self.template.ylabel1.texttable)
-        txte = X.createtext(To_source = self.template.ylabel1.textorientation,
-                Tt_source =  self.template.ylabel1.texttable)
         xs1 = []
         xs2 = []
         xe1 = []
@@ -76,9 +73,6 @@ class Gpc(vcsaddons.core.VCSaddon):
         xt = []
         yt = []
         st = []
-        xte = []
-        yte = []
-        ste = []
         for i,lbl in enumerate(labels):
             x = float(i)/(N-1)
             for y in lbl:
@@ -90,23 +84,13 @@ class Gpc(vcsaddons.core.VCSaddon):
                 mn = min(self.template.data.x1,self.template.data.x2)
                 dt = mn - self.template.ylabel1.x
                 xs1.append([x-d1,x])
-                print "DT:",dt
                 xt.append(x-dt)
                 if i==0:
                     xe1.append([self.template.data.x1-d1,self.template.data.x1])
                     ye1.append([Y,Y])
-                    if dt>0:
-                        xte.append(mn - dt)
-                        yte.append(Y)
-                        ste.append(lbl[y])
                 elif i==N-1:
                     xe2.append([self.template.data.x2+d2,self.template.data.x2])
                     ye2.append([Y,Y])
-                    if dt<0:
-                        mx = max(self.template.data.x1,self.template.data.x2)
-                        xte.append(mx - dt)
-                        yte.append(Y)
-                        ste.append(lbl[y])
                 d2 = abs(self.template.ytic2.x2-self.template.ytic2.x1)
                 xs2.append([x+d2,x])
         l1.viewport = l.viewport
@@ -114,7 +98,6 @@ class Gpc(vcsaddons.core.VCSaddon):
         le1.viewport = [0,1,self.template.data.y1, self.template.data.y2]
         le2.viewport = [0,1,self.template.data.y1, self.template.data.y2]
         txt.viewport = l.viewport
-        txte.viewport = le1.viewport
         l1.x = xs1+[[0,1,1,0]]
         l1.y = ys+[[0,0,1,1]]
         l2.x = xs2
@@ -126,15 +109,11 @@ class Gpc(vcsaddons.core.VCSaddon):
         txt.x = xt
         txt.y = yt
         txt.string = st
-        txte.x = xte
-        txte.y = yte
-        txte.string = ste
         X.plot(l1,bg=bg)
         X.plot(l2,bg=bg)
         X.plot(le1,bg=bg)
         X.plot(le2,bg=bg)
         X.plot(txt,bg=bg)
-        X.plot(txte,bg=bg)
 
 
     def plot(self,array, template="default", bg=False, x=None):
@@ -148,7 +127,7 @@ class Gpc(vcsaddons.core.VCSaddon):
 
         # Pad attributes related to Y axis
         for att in ["datawc_y1","datawc_y2",
-                "yticlabels","ymtics",]:
+                "yticlabels"]:
             # prepare local lists
             exec("%s = list(self.%s)" % (att,att))
             exec("while len(%s) < length: %s+=[%s[-1]]" % (att,att,att))
@@ -175,6 +154,75 @@ class Gpc(vcsaddons.core.VCSaddon):
         if x is None:
             x = self.x
         self.drawYAxes(mins,maxs,yticlabels,x,bg) 
+        ax = array.getAxis(-2)
+        deflbls = {}
+        for i in range(length):
+            deflbls[float(i)/(length-1)] = str(ax[i])
+        if self.xticlabels1 == "*":
+            lbls1 = deflbls
+        else:
+            lbls1 = self.xticlabels1
+        if self.xmtics1 == "":
+            lbls1m = deflbls
+        else:
+            lbls1m = self.xmtics1
+        if self.xticlabels2 == "*":
+            lbls2 = deflbls
+        else:
+            lbls2 = self.xticlabels2
+        if self.xmtics2 == "":
+            lbls2m = deflbls
+        else:
+            lbls2m = self.xmtics2
+
+        for l,lbls in enumerate([lbls1,lbls1m,lbls2,lbls2m]):
+            ln = x.createline(source=self.template.xtic1.line)
+            xs = []
+            ys = []
+            if l % 2 == 0:
+                txt = x.createtext(To_source = self.template.xlabel1.textorientation,
+                        Tt_source = self.template.xlabel1.texttable)
+                txs = []
+                tys = []
+                ts = []
+            for loc in lbls:
+                xs.append([loc,loc])
+                if l==0:
+                    ys.append([self.template.xtic1.y1,self.template.xtic1.y2])
+                    txs.append(loc)
+                    tys.append(self.template.xlabel1.y)
+                    ts.append(lbls[loc])
+                    ln.priority = self.template.xtic1.priority
+                    txt.priority = self.template.xlabel1.priority
+                elif l == 1:
+                    ys.append([self.template.xmintic1.y1,self.template.xmintic1.y2])
+                    ln.priority = self.template.xmintic1.priority
+                elif l == 2:
+                    ys.append([self.template.xtic2.y1,self.template.xtic2.y2])
+                    txs.append(loc)
+                    tys.append(self.template.xlabel2.y)
+                    ts.append(lbls[loc])
+                    ln.priority = self.template.xtic2.priority
+                    txt.priority = self.template.xlabel2.priority
+                elif l == 3:
+                    ys.append([self.template.xmintic2.y1,self.template.xmintic2.y2])
+                    ln.priority = self.template.xmintic2.priority
+            ln.x = xs
+            ln.y = ys
+            ln.viewport = [self.template.data.x1,self.template.data.x2,0,1]
+            x.plot(ln,bg=bg)
+            if l % 2 == 0:  # text on
+                txt.viewport = ln.viewport
+                txt.x = txs
+                txt.y = tys
+                txt.string = ts
+                x.plot(txt,bg=bg)
+            array.info()
+
+
+
+
+
         # Normalizes
         deltas = maxs-mins
         data = (data-mins[:,numpy.newaxis])/deltas[:,numpy.newaxis]
