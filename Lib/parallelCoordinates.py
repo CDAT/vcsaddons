@@ -252,17 +252,41 @@ class Gpc(vcsaddons.core.VCSaddon):
         if self.markercolors is None:
             markercolors = vcs.getcolors(range(nlines+1))
 
+        leg_prio = t.legend.priority
         t.blank()
         t.data.priority = 1
         # Now draws the legend
+        # Now figures out the widest string and tallest
+        text = vcs.createtext(To_source = template.legend.textorientation,
+                Tt_source = template.legend.texttable)
+        text.x=.5
+        text.y = .5
+        width = 0
+        height = 0
+        ax = array.getAxis(-1)
+        ax.info()
+        print ax[:]
         dx = abs(t.legend.x2 - t.legend.x1)
         dy = abs(t.legend.y2 - t.legend.y1)
-        if dy>dx: # vertical legend
-            V = True
-            d = dy/(nlines+1.)
-        else:
-            V = False
-            d = dx/(nlines+1.)
+        leg_lines = dx/10.
+        leg_spc = leg_lines/3.
+        for i in range(nlines):
+            text.string = str(ax[i])
+            ext = x.gettextextent(text)[0]
+            width = max(width,ext[1]-ext[0])
+            height = max(height,ext[3]-ext[2])
+        width += leg_lines+leg_spc
+        maxx = int(dx/width)
+        maxy = int(dy/height)
+        nH = maxx
+        nV = numpy.ceil(nlines/float(nH))
+        spcX = (dx - width*nH)/(nH+1)
+        spcY = (dy - height*nV)/(nV+1)
+        txs = []
+        tys = []
+        ts = []
+        x1 = min(template.legend.x1,template.legend.x2)
+        y1 = max(template.legend.y1,template.legend.y2)
         for i in range(nlines):
             l = vcs.create1d()
             l.colormap = self.colormap
@@ -275,14 +299,39 @@ class Gpc(vcsaddons.core.VCSaddon):
             l.datawc_y1 = 0.
             l.datawc_y2 = 1.
             x.plot(data[:,i],t,l,bg=bg)
-
-
-
-
-
-
-
-
-
-
-    
+            row = int(i % nV)
+            col = int(i/nV)
+            ln = x.createline()
+            ln.color = linecolors[i]
+            ln.type = linetypes[i]
+            ln.width = linewidths[i]
+            ln.priority = template.legend.priority
+            mrk = x.createmarker()
+            mrk.color = markercolors[i]
+            mrk.type = markertypes[i]
+            mrk.size = markersizes[i]
+            mrk.priority = template.legend.priority
+            xs = x1+spcX+col*(width+spcX)
+            ln.x = [xs,xs+leg_lines]
+            mrk.x = [xs+leg_lines/2.]
+            txs.append(xs+leg_lines+leg_spc)
+            ts.append(str(ax[i]))
+            ys = y1 - row*(height+spcY) - spcY
+            ln.y = [ys,ys]
+            mrk.y = [ys]
+            tys.append(ys)
+            x.plot(ln,bg=bg)
+            x.plot(mrk,bg=bg)
+        print "TS:",ts
+        text.halign = "left"
+        text.string = ts
+        text.x = txs
+        text.y = tys
+        text.viewport = [0,1,0,1]
+        text.priority = leg_prio
+        text.list()
+        x.plot(text,bg=bg)
+        ln = x.createline(source = template.legend.line)
+        ln.x = [template.legend.x1,template.legend.x2,template.legend.x2,template.legend.x1,template.legend.x1]
+        ln.y = [template.legend.y1,template.legend.y1,template.legend.y2,template.legend.y2,template.legend.y1]
+        x.plot(ln,bg=bg)
