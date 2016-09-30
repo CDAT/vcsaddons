@@ -62,6 +62,10 @@ class Gpc(vcsaddons.core.VCSaddon):
         l2 = X.createline(source = self.template.ytic2.line)
         le1 = X.createline(source = self.template.ytic1.line)
         le2 = X.createline(source = self.template.ytic2.line)
+        txt = X.createtext(To_source = self.template.ylabel1.textorientation,
+                Tt_source =  self.template.ylabel1.texttable)
+        txte = X.createtext(To_source = self.template.ylabel1.textorientation,
+                Tt_source =  self.template.ylabel1.texttable)
         xs1 = []
         xs2 = []
         xe1 = []
@@ -69,26 +73,47 @@ class Gpc(vcsaddons.core.VCSaddon):
         ye1 = []
         ye2 = []
         ys = []
+        xt = []
+        yt = []
+        st = []
+        xte = []
+        yte = []
+        ste = []
         for i,lbl in enumerate(labels):
             x = float(i)/(N-1)
             for y in lbl:
+                st.append(lbl[y])
                 Y= (y - mins[i])/(maxs[i]-mins[i])
                 ys.append([Y,Y])
+                yt.append(Y)
                 d1 = abs(self.template.ytic1.x2-self.template.ytic1.x1)
+                mn = min(self.template.data.x1,self.template.data.x2)
+                dt = self.template.ylabel1.x-mn
                 xs1.append([x-d1,x])
+                xt.append(x-dt)
                 if i==0:
-                    print "D1:",d1
                     xe1.append([self.template.data.x1-d1,self.template.data.x1])
                     ye1.append([Y,Y])
+                    if dt>0:
+                        xte.append(mn - dt)
+                        yte.append(Y)
+                        ste.append(lbl[y])
                 elif i==N-1:
                     xe2.append([self.template.data.x2+d2,self.template.data.x2])
                     ye2.append([Y,Y])
+                    if dt<0:
+                        mx = max(self.template.data.x1,self.template.data.x2)
+                        xte.append(mx - dt)
+                        yte.append(Y)
+                        ste.append(lbl[y])
                 d2 = abs(self.template.ytic2.x2-self.template.ytic2.x1)
                 xs2.append([x+d2,x])
         l1.viewport = l.viewport
         l2.viewport = l.viewport
         le1.viewport = [0,1,self.template.data.y1, self.template.data.y2]
         le2.viewport = [0,1,self.template.data.y1, self.template.data.y2]
+        txt.viewport = l.viewport
+        txte.viewport = le1.viewport
         l1.x = xs1
         l1.y = ys
         l2.x = xs2
@@ -97,11 +122,18 @@ class Gpc(vcsaddons.core.VCSaddon):
         le1.y = ye1
         le2.x = xe2
         le2.y = ye2
-        le1.list()
+        txt.x = xt
+        txt.y = yt
+        txt.string = st
+        txte.x = xte
+        txte.y = yte
+        txte.string = ste
         X.plot(l1,bg=bg)
         X.plot(l2,bg=bg)
         X.plot(le1,bg=bg)
         X.plot(le2,bg=bg)
+        X.plot(txt,bg=bg)
+        X.plot(txte,bg=bg)
 
 
     def plot(self,array, template="default", bg=False, x=None):
