@@ -261,23 +261,30 @@ class Gpc(vcsaddons.core.VCSaddon):
                 Tt_source = template.legend.texttable)
         text.x=.5
         text.y = .5
-        width = 0
-        height = 0
         ax = array.getAxis(-1)
-        ax.info()
-        print ax[:]
+        maxx = 0
+        maxy = 0
         dx = abs(t.legend.x2 - t.legend.x1)
         dy = abs(t.legend.y2 - t.legend.y1)
-        leg_lines = dx/10.
-        leg_spc = leg_lines/3.
-        for i in range(nlines):
-            text.string = str(ax[i])
-            ext = x.gettextextent(text)[0]
-            width = max(width,ext[1]-ext[0])
-            height = max(height,ext[3]-ext[2])
-        width += leg_lines+leg_spc
-        maxx = int(dx/width)
-        maxy = int(dy/height)
+        while maxx*maxy < nlines:
+            width = 0
+            height = 0
+            for i in range(nlines):
+                text.string = str(ax[i])
+                ext = x.gettextextent(text)[0]
+                width = max(width,ext[1]-ext[0])
+                height = max(height,ext[3]-ext[2])
+            leg_lines = width/3.
+            leg_spc = leg_lines/3.
+            width += leg_lines+leg_spc
+            maxx = int(dx/width)
+            maxy = int(dy/height)
+            if maxx*maxy < nlines:
+                text.height -= 1
+            if text.height==0:
+                text.height=1
+                break
+
         nH = maxx
         nV = numpy.ceil(nlines/float(nH))
         spcX = (dx - width*nH)/(nH+1)
@@ -287,6 +294,11 @@ class Gpc(vcsaddons.core.VCSaddon):
         ts = []
         x1 = min(template.legend.x1,template.legend.x2)
         y1 = max(template.legend.y1,template.legend.y2)
+        # Box around legend area
+        ln = x.createline(source = template.legend.line)
+        ln.x = [template.legend.x1,template.legend.x2,template.legend.x2,template.legend.x1,template.legend.x1]
+        ln.y = [template.legend.y1,template.legend.y1,template.legend.y2,template.legend.y2,template.legend.y1]
+        x.plot(ln,bg=bg)
         for i in range(nlines):
             l = vcs.create1d()
             l.colormap = self.colormap
@@ -299,8 +311,8 @@ class Gpc(vcsaddons.core.VCSaddon):
             l.datawc_y1 = 0.
             l.datawc_y2 = 1.
             x.plot(data[:,i],t,l,bg=bg)
-            row = int(i % nV)
-            col = int(i/nV)
+            col = int(i % nH)
+            row = int(i/nH)
             ln = x.createline()
             ln.color = linecolors[i]
             ln.type = linetypes[i]
@@ -322,16 +334,10 @@ class Gpc(vcsaddons.core.VCSaddon):
             tys.append(ys)
             x.plot(ln,bg=bg)
             x.plot(mrk,bg=bg)
-        print "TS:",ts
         text.halign = "left"
         text.string = ts
         text.x = txs
         text.y = tys
         text.viewport = [0,1,0,1]
         text.priority = leg_prio
-        text.list()
         x.plot(text,bg=bg)
-        ln = x.createline(source = template.legend.line)
-        ln.x = [template.legend.x1,template.legend.x2,template.legend.x2,template.legend.x1,template.legend.x1]
-        ln.y = [template.legend.y1,template.legend.y1,template.legend.y2,template.legend.y2,template.legend.y1]
-        x.plot(ln,bg=bg)
