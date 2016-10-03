@@ -259,7 +259,7 @@ class Gpc(vcsaddons.core.VCSaddon):
         # Now figures out the widest string and tallest
         text = vcs.createtext(To_source = template.legend.textorientation,
                 Tt_source = template.legend.texttable)
-        text.x=.5
+        text.x = .5
         text.y = .5
         ax = array.getAxis(-1)
         maxx = 0
