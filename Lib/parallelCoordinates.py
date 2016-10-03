@@ -46,16 +46,24 @@ class Gpc(vcsaddons.core.VCSaddon):
 
     def drawYAxes(self,mins,maxs,labels,template,X,bg):
         N = len(labels)
-        l = X.createline(source=template.box1.line)
+        l = X.createline(source=template.xtic1.line)
         l.viewport = [template.data.x1, template.data.x2,
                 template.data.y1, template.data.y2]
         ys = [[0,1]]*N
         xs = [[x/(N-1.),x/(N-1.)] for x in range(N)]
 
-        l.x=xs+[[0,1,1,0,0]]
-        l.y=ys+[[0,0,1,1,0]]
+        l.x=xs
+        l.y=ys
+        l.priority = template.xtic1.priority
+        X.plot(l,bg=bg,render=False)
+
+        l = X.createline(source=template.box1.line)
+        l.viewport = [template.data.x1, template.data.x2,
+                template.data.y1, template.data.y2]
+        l.x=[[0,1,1,0,0]]
+        l.y=[[0,0,1,1,0]]
         l.priority = template.box1.priority
-        X.plot(l,bg=bg)
+        X.plot(l,bg=bg,render=False)
 
         l1 = X.createline(source = template.ytic1.line)
         l2 = X.createline(source = template.ytic2.line)
@@ -116,14 +124,14 @@ class Gpc(vcsaddons.core.VCSaddon):
         txt.x = xt
         txt.y = yt
         txt.string = st
-        X.plot(l1,bg=bg)
-        X.plot(l2,bg=bg)
-        X.plot(le1,bg=bg)
-        X.plot(le2,bg=bg)
-        X.plot(txt,bg=bg)
+        X.plot(l1,bg=bg,render=False)
+        X.plot(l2,bg=bg,render=False)
+        X.plot(le1,bg=bg,render=False)
+        X.plot(le2,bg=bg,render=False)
+        X.plot(txt,bg=bg,render=False)
 
 
-    def plot(self,array, template=None, bg=False, x=None):
+    def plot(self,array, template=None, bg=False, render=True, x=None):
         """Parallel Coordinates plot array must be of shape:
         (...,Dim1,Nlines)
         """
@@ -167,6 +175,8 @@ class Gpc(vcsaddons.core.VCSaddon):
         deflbls = {}
         for i in range(length):
             deflbls[float(i)/(length-1)] = str(ax[i])
+            if hasattr(array,"units") and isinstance(array.units,(list,tuple)):
+                deflbls[float(i)/(length-1)] += " (%s)" % array.units[i]
         if self.xticlabels1 == "*":
             lbls1 = deflbls
         else:
@@ -223,13 +233,13 @@ class Gpc(vcsaddons.core.VCSaddon):
             ln.x = xs
             ln.y = ys
             ln.viewport = [t.data.x1,t.data.x2,0,1]
-            x.plot(ln,bg=bg)
+            x.plot(ln,bg=bg,render=False)
             if l % 2 == 0:  # text on
                 txt.viewport = ln.viewport
                 txt.x = txs
                 txt.y = tys
                 txt.string = ts
-                x.plot(txt,bg=bg)
+                x.plot(txt,bg=bg,render=False)
 
         # Normalizes
         deltas = maxs-mins
@@ -252,53 +262,16 @@ class Gpc(vcsaddons.core.VCSaddon):
         if self.markercolors is None:
             markercolors = vcs.getcolors(range(nlines+1))
 
-        leg_prio = t.legend.priority
+        # Now draws the legend
+        vcsaddons.utils.drawLinesAndMarkersLegend(x,t.legend,
+                linecolors,linetypes,linewidths,
+                markercolors,markertypes,markersizes,
+                [str(v) for v in array.getAxis(-1)],
+                bg=bg,render=False)
+
         t.blank()
         t.data.priority = 1
-        # Now draws the legend
-        # Now figures out the widest string and tallest
-        text = vcs.createtext(To_source = template.legend.textorientation,
-                Tt_source = template.legend.texttable)
-        text.x = .5
-        text.y = .5
-        ax = array.getAxis(-1)
-        maxx = 0
-        maxy = 0
-        dx = abs(t.legend.x2 - t.legend.x1)
-        dy = abs(t.legend.y2 - t.legend.y1)
-        while maxx*maxy < nlines:
-            width = 0
-            height = 0
-            for i in range(nlines):
-                text.string = str(ax[i])
-                ext = x.gettextextent(text)[0]
-                width = max(width,ext[1]-ext[0])
-                height = max(height,ext[3]-ext[2])
-            leg_lines = width/3.
-            leg_spc = leg_lines/3.
-            width += leg_lines+leg_spc
-            maxx = int(dx/width)
-            maxy = int(dy/height)
-            if maxx*maxy < nlines:
-                text.height -= 1
-            if text.height==0:
-                text.height=1
-                break
 
-        nH = maxx
-        nV = numpy.ceil(nlines/float(nH))
-        spcX = (dx - width*nH)/(nH+1)
-        spcY = (dy - height*nV)/(nV+1)
-        txs = []
-        tys = []
-        ts = []
-        x1 = min(template.legend.x1,template.legend.x2)
-        y1 = max(template.legend.y1,template.legend.y2)
-        # Box around legend area
-        ln = x.createline(source = template.legend.line)
-        ln.x = [template.legend.x1,template.legend.x2,template.legend.x2,template.legend.x1,template.legend.x1]
-        ln.y = [template.legend.y1,template.legend.y1,template.legend.y2,template.legend.y2,template.legend.y1]
-        x.plot(ln,bg=bg)
         for i in range(nlines):
             l = vcs.create1d()
             l.colormap = self.colormap
@@ -310,34 +283,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             l.markersize = markersizes[i]
             l.datawc_y1 = 0.
             l.datawc_y2 = 1.
-            x.plot(data[:,i],t,l,bg=bg)
-            col = int(i % nH)
-            row = int(i/nH)
-            ln = x.createline()
-            ln.color = linecolors[i]
-            ln.type = linetypes[i]
-            ln.width = linewidths[i]
-            ln.priority = template.legend.priority
-            mrk = x.createmarker()
-            mrk.color = markercolors[i]
-            mrk.type = markertypes[i]
-            mrk.size = markersizes[i]
-            mrk.priority = template.legend.priority
-            xs = x1+spcX+col*(width+spcX)
-            ln.x = [xs,xs+leg_lines]
-            mrk.x = [xs+leg_lines/2.]
-            txs.append(xs+leg_lines+leg_spc)
-            ts.append(str(ax[i]))
-            ys = y1 - row*(height+spcY) - spcY
-            ln.y = [ys,ys]
-            mrk.y = [ys]
-            tys.append(ys)
-            x.plot(ln,bg=bg)
-            x.plot(mrk,bg=bg)
-        text.halign = "left"
-        text.string = ts
-        text.x = txs
-        text.y = tys
-        text.viewport = [0,1,0,1]
-        text.priority = leg_prio
-        x.plot(text,bg=bg)
+            if i < nlines-1:
+                x.plot(data[:,i],t,l,bg=bg,render=False)
+            else:
+                x.plot(data[:,i],t,l,bg=bg,render=render)
