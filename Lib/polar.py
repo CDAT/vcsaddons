@@ -587,14 +587,14 @@ def init_polar():
         # Template already exists
         pass
     # Create some nice default polar GMs
-    degree_polar = polar.Gpo("degrees", template="polar_oned")
+    degree_polar = Gpo("degrees", template="polar_oned")
     degree_polar.datawc_x1 = 0
     degree_polar.datawc_x2 = 360
     degree_polar.xticlabels1 = {
         i: str(i) for i in range(0, 360, 45)
     }
 
-    clock_24 = polar.Gpo("diurnal", template="polar_oned")
+    clock_24 = Gpo("diurnal", template="polar_oned")
     clock_24.datawc_x1 = 0
     clock_24.datawc_x2 = 24
     clock_24.clockwise = True
@@ -604,7 +604,7 @@ def init_polar():
         i: str(i) for i in range(0, 24, 3)
     }
 
-    clock_24_meridiem = polar.Gpo("diurnal_12_hour", source="diurnal", template="polar_oned")
+    clock_24_meridiem = Gpo("diurnal_12_hour", source="diurnal", template="polar_oned")
     clock_24_meridiem.xticlabels1 = {
         0: "12 AM",
         3: "3 AM",
@@ -616,7 +616,7 @@ def init_polar():
         21: "9 PM"
     }
 
-    clock_12 = polar.Gpo("semidiurnal", source="diurnal", template="polar_oned")
+    clock_12 = Gpo("semidiurnal", source="diurnal", template="polar_oned")
     clock_12.datawc_x2 = 12
     clock_12.xticlabels1 = {
         i: str(i) for i in range(3, 13, 3)
@@ -624,7 +624,7 @@ def init_polar():
     # 3 on the right
     clock_12.theta_offset = -3
 
-    annual_cycle = polar.Gpo("annual_cycle", template="polar_oned")
+    annual_cycle = Gpo("annual_cycle", template="polar_oned")
     annual_cycle.datawc_x1 = 1
     annual_cycle.datawc_x2 = 13
     annual_cycle.clockwise = True
@@ -645,7 +645,7 @@ def init_polar():
     # Put December on the top
     annual_cycle.theta_offset = -2
 
-    seasonal = polar.Gpo("seasonal", template="polar_oned")
+    seasonal = Gpo("seasonal", template="polar_oned")
     seasonal.datawc_x1 = 0
     seasonal.datawc_x2 = 4
     seasonal.xticlabels1 = {0: "DJF", 1: "MAM", 2: "JJA", 3: "SON"}

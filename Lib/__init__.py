@@ -28,7 +28,7 @@ def createparallelcoordinates(name=None, source="default", x=None, template=None
 
 def getpolar(name=None):
     if "polar_oned" not in gms:
-        init_polar()
+        polar.init_polar()
     if name in gms["polar_oned"]:
         return gms["polar_oned"][name]
     raise KeyError("No Polar GM exists with name '%s'" % name)
