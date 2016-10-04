@@ -29,6 +29,15 @@ class Gpc(vcsaddons.core.VCSaddon):
                 gm = vcsaddons.gms[self.g_type][source]
             else:
                 gm = source
+            self.datawc_y1 = gm.datawc_y1
+            self.datawc_y2 = gm.datawc_y2
+            self.markercolors = gm.markercolors
+            self.markertypes = gm.markertypes
+            self.markersizes = gm.markersizes
+            self.linecolors = gm.linecolors
+            self.linetypes = gm.linetypes
+            self.linewidths = gm.linewidths
+            self.yticlabels = gm.yticlabels
 
     def list(self):
         print 'graphics method = ', self.g_name
@@ -106,7 +115,7 @@ class Gpc(vcsaddons.core.VCSaddon):
                     xe1.append([template.data.x1 - d1, template.data.x1])
                     ye1.append([Y, Y])
                 elif i == N - 1:
-                    xe2.append([template.data.x2 + d2, template.data.x2])
+                    xe2.append([template.data.x2 + d1, template.data.x2])
                     ye2.append([Y, Y])
                 d2 = abs(template.ytic2.x2 - template.ytic2.x1)
                 xs2.append([x + d2, x])
@@ -160,18 +169,18 @@ class Gpc(vcsaddons.core.VCSaddon):
         for i in range(length):
             levels = vcs.mkscale(mins[i], maxs[i])
             # Do we need to create our range
-            if numpy.allclose(datawc_y1[i], 1.e20):
-                datawc_y1[i] = levels[0]
-                datawc_y2[i] = levels[-1]
-            maxs[i] = datawc_y2[i]
-            mins[i] = datawc_y1[i]
+            if numpy.allclose(datawc_y1[i], 1.e20):  # noqa
+                datawc_y1[i] = levels[0]  # noqa
+                datawc_y2[i] = levels[-1]  # noqa
+            maxs[i] = datawc_y2[i]  # noqa
+            mins[i] = datawc_y1[i]  # noqa
 
             # Do we have tics?
-            if yticlabels[i] == "*":
-                yticlabels[i] = vcs.mklabels(levels)
+            if yticlabels[i] == "*":  # noqa
+                yticlabels[i] = vcs.mklabels(levels)  # noqa
         if x is None:
             x = self.x
-        self.drawYAxes(mins, maxs, yticlabels, t, x, bg)
+        self.drawYAxes(mins, maxs, yticlabels, t, x, bg)  # noqa
         ax = array.getAxis(-2)
         deflbls = {}
         for i in range(length):
@@ -265,8 +274,8 @@ class Gpc(vcsaddons.core.VCSaddon):
 
         # Now draws the legend
         t.drawLinesAndMarkersLegend(x,
-                                    linecolors, linetypes, linewidths,
-                                    markercolors, markertypes, markersizes,
+                                    linecolors, linetypes, linewidths,  # noqa
+                                    markercolors, markertypes, markersizes,  # noqa
                                     [str(v) for v in array.getAxis(-1)],
                                     bg=bg, render=False)
 
@@ -280,11 +289,11 @@ class Gpc(vcsaddons.core.VCSaddon):
             l = vcs.create1d()
             l.colormap = self.colormap
             l.linecolor = linecolors[i]
-            l.linewidth = linewidths[i]
-            l.linetype = linetypes[i]
-            l.marker = markertypes[i]
+            l.linewidth = linewidths[i]  # noqa
+            l.linetype = linetypes[i]  # noqa
+            l.marker = markertypes[i]  # noqa
             l.markercolor = markercolors[i]
-            l.markersize = markersizes[i]
+            l.markersize = markersizes[i]  # noqa
             l.datawc_y1 = 0.
             l.datawc_y2 = 1.
             if i < nlines - 1:
