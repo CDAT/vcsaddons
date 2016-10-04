@@ -175,8 +175,8 @@ class Gpc(vcsaddons.core.VCSaddon):
         deflbls = {}
         for i in range(length):
             deflbls[float(i)/(length-1)] = str(ax[i])
-            if hasattr(array,"units") and isinstance(array.units,(list,tuple)):
-                deflbls[float(i)/(length-1)] += " (%s)" % array.units[i]
+            if hasattr(ax,"units") and isinstance(ax.units,(list,tuple)):
+                deflbls[float(i)/(length-1)] += " (%s)" % ax.units[i]
         if self.xticlabels1 == "*":
             lbls1 = deflbls
         else:
@@ -263,12 +263,15 @@ class Gpc(vcsaddons.core.VCSaddon):
             markercolors = vcs.getcolors(range(nlines+1))
 
         # Now draws the legend
-        vcsaddons.utils.drawLinesAndMarkersLegend(x,t.legend,
+        t.drawLinesAndMarkersLegend(x,
                 linecolors,linetypes,linewidths,
                 markercolors,markertypes,markersizes,
                 [str(v) for v in array.getAxis(-1)],
                 bg=bg,render=False)
 
+        lst = ["max","min","mean"]
+        t.blank(lst)
+        t.drawAttributes(x,array,self,bg=bg)
         t.blank()
         t.data.priority = 1
 
