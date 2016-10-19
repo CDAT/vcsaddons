@@ -272,12 +272,19 @@ class Gpc(vcsaddons.core.VCSaddon):
         if self.markercolors is None:
             markercolors = vcs.getcolors(range(nlines + 1))
 
+        # Mark fully missing models
+        scratched = []
+        for i in range(nlines):
+            if data[:, i].count() > 0:
+                scratched.append(False)
+            else:
+                scratched.append(True)
         # Now draws the legend
         t.drawLinesAndMarkersLegend(x,
                                     linecolors, linetypes, linewidths,  # noqa
                                     markercolors, markertypes, markersizes,  # noqa
                                     [str(v) for v in array.getAxis(-1)],
-                                    bg=bg, render=False)
+                                    bg=bg, render=False, scratched=scratched)
 
         lst = ["max", "min", "mean"]
         t.blank(lst)
@@ -286,17 +293,18 @@ class Gpc(vcsaddons.core.VCSaddon):
         t.data.priority = 1
 
         for i in range(nlines):
-            l = vcs.create1d()
-            l.colormap = self.colormap
-            l.linecolor = linecolors[i]
-            l.linewidth = linewidths[i]  # noqa
-            l.linetype = linetypes[i]  # noqa
-            l.marker = markertypes[i]  # noqa
-            l.markercolor = markercolors[i]
-            l.markersize = markersizes[i]  # noqa
-            l.datawc_y1 = 0.
-            l.datawc_y2 = 1.
-            if i < nlines - 1:
-                x.plot(data[:, i], t, l, bg=bg, render=False)
-            else:
-                x.plot(data[:, i], t, l, bg=bg, render=render)
+            if data[:, i].count() > 0:
+                l = vcs.create1d()
+                l.colormap = self.colormap
+                l.linecolor = linecolors[i]
+                l.linewidth = linewidths[i]  # noqa
+                l.linetype = linetypes[i]  # noqa
+                l.marker = markertypes[i]  # noqa
+                l.markercolor = markercolors[i]
+                l.markersize = markersizes[i]  # noqa
+                l.datawc_y1 = 0.
+                l.datawc_y2 = 1.
+                if i < nlines - 1:
+                    x.plot(data[:, i], t, l, bg=bg, render=False)
+                else:
+                    x.plot(data[:, i], t, l, bg=bg, render=render)
