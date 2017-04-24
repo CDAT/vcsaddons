@@ -7,8 +7,8 @@ setup (name = "vcsaddons",
        version='0.9',
        description = "addons for VCS",
        url = "http://cdat.sf.net",
-       packages = ['vcsaddons'],
-       package_dir = {'vcsaddons': 'Lib'},
+       packages = ['vcsaddons','EzTemplate'],
+       package_dir = {'vcsaddons': 'Lib', 'EzTemplate':'EzTemplate/Lib'},
        ext_modules = [
     Extension('vcsaddons._gis',
               src,['Include']
