@@ -234,13 +234,19 @@ class Gpo(vcsaddons.core.VCSaddon):
         self.to_cleanup.append(to)
         return to
 
-    def magnitude_from_value(self, value, minmax):
-        if numpy.allclose((self.datawc_y1, self.datawc_y2), 1e20):
-            min, max = minmax
+    def magnitude_from_value(self, value, scale):
+        below = None
+        for ind, v in enumerate(scale):
+            if v > value:
+                break
+            below = v
         else:
-            min, max = self.datawc_y1, self.datawc_y2
+            return 1
 
-        return (value - min) / float(max - min)
+        pct_between_levs = (value - below) / float(v - below)
+        lower_lev_pos = (ind - 1) / float(len(scale) - 1)
+        higher_lev_pos = ind / float(len(scale) - 1)
+        return pct_between_levs * (higher_lev_pos - lower_lev_pos) + lower_lev_pos
 
     def theta_from_value(self, value):
         if numpy.allclose((self.datawc_x1, self.datawc_x2), 1e20):
@@ -353,7 +359,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                 m_labels = None
 
             for lev in m_scale:
-                lev_radius = radius * self.magnitude_from_value(lev, (m_scale[0], m_scale[-1]))
+                lev_radius = radius * self.magnitude_from_value(lev, m_scale)
                 x, y = circle_points(center, lev_radius, ratio=window_aspect)
                 if m_labels is not None:
                     if lev in mag_labels:
@@ -378,7 +384,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                 mintics = vcs.elements["list"][mintics]
 
             for mag in mintics:
-                mintic_radius = radius * self.magnitude_from_value(mag, (m_scale[0], m_scale[-1]))
+                mintic_radius = radius * self.magnitude_from_value(mag, m_scale)
                 x, y = circle_points(center, mintic_radius, ratio=window_aspect)
                 mag_mintics.x.append(x)
                 mag_mintics.y.append(y)
@@ -464,7 +470,7 @@ class Gpo(vcsaddons.core.VCSaddon):
 
                 for m, t in zip(mag, theta):
                     t = self.theta_from_value(t)
-                    r = self.magnitude_from_value(m, (m_scale[0], m_scale[-1])) * radius
+                    r = self.magnitude_from_value(m, m_scale) * radius
                     x.append(xmul * numpy.cos(t) * r + center[0])
                     y.append(ymul * numpy.sin(t) * r + center[1])
 
@@ -501,7 +507,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             y = []
             for m, t in zip(mag, theta):
                 t = self.theta_from_value(t)
-                r = self.magnitude_from_value(m, (m_scale[0], m_scale[-1])) * radius
+                r = self.magnitude_from_value(m, m_scale) * radius
                 x.append(xmul * numpy.cos(t) * r + center[0])
                 y.append(ymul * numpy.sin(t) * r + center[1])
 
