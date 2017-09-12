@@ -10,7 +10,7 @@ class Gyf(VCSaddon):
             self.fillareastyle = 'solid'
             self.fillareaindex = 1
             self.fillareacolor = 252
-            self.line = 'solid'
+            self.linetype = 'solid'
             self.linewidth=1.0
             self.linecolor=241
         else:
@@ -18,7 +18,7 @@ class Gyf(VCSaddon):
             self.fillareastyle= gm.fillareastyle
             self.fillareaindex = gm.fillareaindex
             self.fillareacolor = gm.fillareacolor
-            self.line = gm.line
+            self.linetype = gm.linetype
             self.linewidth = gm.linewidth
             self.linecolor = gm.linecolor
             
@@ -30,7 +30,7 @@ class Gyf(VCSaddon):
         print 'fillareastyle = ', self.fillareastyle
         print 'fillareaindex = ', self.fillareaindex
         print 'fillareacolor = ', self.fillareacolor
-        print 'line = ', self.line
+        print 'linetype = ', self.linetype
         print 'linewidth = ', self.linewidth
         print 'linecolor = ', self.linecolor
         
@@ -80,7 +80,7 @@ class Gyf(VCSaddon):
         fill.color = [self.fillareacolor,]
         fill.index = [self.fillareaindex,]
 
-        line.type = [self.line,]
+        line.type = [self.linetype,]
         line.width = [self.linewidth,]
         line.color = [self.linecolor,]
         
@@ -107,7 +107,7 @@ class Gyf(VCSaddon):
 
         x.worldcoordinate = fill.worldcoordinate 
 
-        dsp = template.plot(data,self,bg=bg)
+        dsp = template.plot(x,data,self,bg=bg)
         for d in dsp:
             displays.append(d)
 

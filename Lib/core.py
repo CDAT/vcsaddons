@@ -5,14 +5,14 @@ class VCSaddon(object):
     def __init__(self,name=None,source='default',x=None,template=None):
         self._saves={}
         self.g_nslabs=1
-        if not self.g_type in vcsaddons.gms.keys():
-            vcsaddons.gms[self.g_type]={}
+        if not self.g_name in vcsaddons.gms.keys():
+            vcsaddons.gms[self.g_name]={}
         if name is None:
             cont = True
             while cont:
                 num= numpy.random.randint(1000)
-                nm = self.g_type + '_'+str(num)
-                if not nm in vcsaddons.gms[self.g_type].keys():
+                nm = self.g_name + '_'+str(num)
+                if not nm in vcsaddons.gms[self.g_name].keys():
                     name = nm
                     cont = False
 
@@ -30,7 +30,7 @@ class VCSaddon(object):
         else:
             raise "Error did not know what to do with template: %s" % template
 
-        if name in vcsaddons.gms[self.g_type].keys():
+        if name in vcsaddons.gms[self.g_name].keys():
             raise "Error graphic method %s already exists" % name
 
         if source=='default':
@@ -56,9 +56,9 @@ class VCSaddon(object):
             self.colormap = "default"
         else:
             if isinstance(source, (str, unicode)):
-                gm = vcsaddons.gms[self.g_type].get(source,None)
+                gm = vcsaddons.gms[self.g_name].get(source,None)
                 if gm is None:
-                    raise "error could not find graphic method %s (of type %s)" % (source, self.g_type)
+                    raise "error could not find graphic method %s (of type %s)" % (source, self.g_name)
             else:
                 gm = source
             self.datawc_x1=gm.datawc_x1
@@ -81,7 +81,7 @@ class VCSaddon(object):
             self.legend = gm.legend
             self.projection=gm.projection
         self.name = name
-        vcsaddons.gms[self.g_type][name]=self
+        vcsaddons.gms[self.g_name][name]=self
 
 
     def list(self):
@@ -150,7 +150,7 @@ class VCSaddon(object):
                 x.display_names.remove(display.name)
         nm, src = x.check_name_source(None, "default", "display")
         display = vcs.displayplot.Dp(nm)
-        display.g_name = self.name
+        display.g_name = self.g_name
         display.g_type = self.g_type
         display.array = [slab, slab2]
         return display
@@ -175,12 +175,12 @@ class VCSaddon(object):
 
     def getgm(self,source="default"):
         gm = None
-        for nm in vcsaddons.gms[self.g_type].keys():
+        for nm in vcsaddons.gms[self.g_name].keys():
             if source == nm:
-                return vcsaddons.gms[self.g_type][nm]
+                return vcsaddons.gms[self.g_name][nm]
 
         if gm is None:
-            raise "Could not find graphic method %s named: %s" % (self.g_type, source)
+            raise "Could not find graphic method %s named: %s" % (self.g_name, source)
 
     def creategm(self,name,source='default'):
         return self.__init__(name,source=source,x=self.x,template=self.template)

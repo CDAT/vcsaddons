@@ -22,7 +22,7 @@ class Ghg(VCSaddon):
             self.bins = []
         else:
             if isinstance(source, (str, unicode)):
-                gm = vcsaddons.gms[self.g_type][source]
+                gm = vcsaddons.gms[self.g_name][source]
             else:
                 gm = source
             self.line = gm.line
