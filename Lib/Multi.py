@@ -275,7 +275,7 @@ class Multi(object):
             t=self.x.gettemplate(nm)
 
         lg='global'
-        if isinstance(legend,str):
+        if isinstance(legend,basestring):
             lg=legend.lower()
             if lg in ['single','local']:
                 if self.legend.direction=='vertical':
@@ -365,10 +365,6 @@ class Multi(object):
         for i in tmpl:
             if tmpl==range(n):
                 t=self.get(row=ir,column=ic)
-                ic+=1
-                if ic==self.columns :
-                    ic=0
-                    ir+=1
             else:
                 t=self.x.gettemplate(i)
                 sp=i.split('_x_')
@@ -392,6 +388,11 @@ class Multi(object):
             l.type='dot'
             l.priority=t.legend.priority
             self.x.plot(l,bg=bg)
+            if tmpl==range(n):
+                ic+=1
+                if ic==self.columns:
+                    ic=0
+                    ir+=1
                 
             
         self.x.postscript(out)

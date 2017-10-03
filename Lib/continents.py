@@ -22,7 +22,7 @@ class Guc(VCSaddon):
         self.g_type='userconts'
         VCSaddon.__init__(self,name,source,x,template)
         if source == 'default':
-            self.datadir=os.path.join(os.expanduser("~"),".uvcdat")
+            self.datadir=os.path.join(os.path.expanduser("~"),vcs.getdotdirectory()[0])
             self.types = [1,]
             self.colors = [242,]
             self.lines=['solid',]
@@ -33,7 +33,7 @@ class Guc(VCSaddon):
             self.datadir= gm.datadir
             self.types = gm.types
             self.colors = gm.colors
-            self.lines = gm.line
+            self.lines = gm.lines
             self.widths = gm.widths
             self.sources = gm.sources
             
@@ -193,7 +193,7 @@ class Guc(VCSaddon):
         data += "-99 -99\n"
         return data
        
-    def plot(self,data=None,template = None, bg=0, x=None):
+    def plot(self,data=None,template = None, bg=0, x=None, **kargs):
         if x is None:
             x = self.x
         if template is None:
@@ -242,7 +242,7 @@ class Guc(VCSaddon):
             elif type == "shapefile" or type==2:
                 source = self.sources[i]
                 data = self.load_shapefile(source)
-            f = open(os.path.join(os.environ.get("HOME","."),"PCMDI_GRAPHICS","data_continent_other10"),"w")
+            f = open(os.path.join(self.datadir,"data_continent_other10"),"w")
             f.write(data)
             f.close()
             c = x.createcontinents()

@@ -13,5 +13,6 @@ setup (name = "vcsaddons",
     Extension('vcsaddons._gis',
               src,['Include']
               ),
-    ]
+    ],
+       data_files = [("share/vcsaddons",('share/test_data_files.txt',))]
        )
