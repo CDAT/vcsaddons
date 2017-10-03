@@ -19,7 +19,7 @@ def createhistogram(name=None,source='default',x=None,template=None):
 
 
 def createpolar(name=None, source="default", x=None, template=None):
-    if "polar_oned" not in gms:
+    if "Gpo" not in gms:
         polar.init_polar()
     return polar.Gpo(name, source=source, x=x, template=template)
 
@@ -27,10 +27,10 @@ def createparallelcoordinates(name=None, source="default", x=None, template=None
     return parallelCoordinates.Gpc(name, source=source, x=x, template=template)
 
 def getpolar(name=None):
-    if "polar_oned" not in gms:
+    if "Gpo" not in gms:
         polar.init_polar()
-    if name in gms["polar_oned"]:
-        return gms["polar_oned"][name]
+    if name in gms["Gpo"]:
+        return gms["Gpo"][name]
     raise KeyError("No Polar GM exists with name '%s'" % name)
 
 
