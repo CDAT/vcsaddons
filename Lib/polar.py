@@ -163,19 +163,18 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.markercolors = ["black"]
             self.markers = ["dot"]
             self.markercolorsource = "group"
+            self.markerpriority = 2
             self.clockwise = False
             self.theta_offset = 0
+            self.theta_tick_count = 6
             self.magnitude_ticks = "*"
             self.magnitude_mintics = None
             self.magnitude_tick_angle = 0
-            self.theta_tick_count = 6
             self.group_names = []
-            self.draw_lines = False
             self.connect_groups = False
             self.linecolors = ["black"]
             self.lines = ["solid"]
             self.linewidths = [1]
-            self.markerpriority = 2
             self.linepriority = 1
             # Nice default labels
             self.xticlabels1 = {
@@ -199,7 +198,6 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.markercolorsource = gm.markercolorsource
             self.markerpriority = gm.markerpriority
             self.clockwise = gm.clockwise
-            self.draw_lines = gm.draw_lines
             self.linecolors = gm.linecolors
             self.linewidths = gm.linewidths
             self.linepriority = gm.linepriority
@@ -490,7 +488,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             labels.y = []
             labels.string = []
 
-        if self.draw_lines:
+        if self.linepriority>0:
             line = vcs.createline()
             line.x = []
             line.y = []
@@ -566,7 +564,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         if template.legend.priority > 0:
             canvas.plot(labels, **plot_kwargs)
             del vcs.elements["textcombined"][labels.name]
-        if self.draw_lines:
+        if self.linepriority>0:
             canvas.plot(line, **plot_kwargs)
             del vcs.elements["line"][line.name]
 
