@@ -241,9 +241,15 @@ class Gpo(vcsaddons.core.VCSaddon):
                 break
             below = v
         else:
-            return 1
+            return numpy.nan
+        if below is None:
+            return numpy.nan
 
-        pct_between_levs = (value - below) / float(v - below)
+        try:
+            pct_between_levs = (value - below) / float(v - below)
+        except:
+            print value,below,v,scale
+            raise Exception
         lower_lev_pos = (ind - 1) / float(len(scale) - 1)
         higher_lev_pos = ind / float(len(scale) - 1)
         return pct_between_levs * (higher_lev_pos - lower_lev_pos) + lower_lev_pos
@@ -471,6 +477,8 @@ class Gpo(vcsaddons.core.VCSaddon):
                 for m, t in zip(mag, theta):
                     t = self.theta_from_value(t)
                     r = self.magnitude_from_value(m, m_scale) * radius
+                    if r == numpy.nan:
+                        continue
                     x.append(xmul * numpy.cos(t) * r + center[0])
                     y.append(ymul * numpy.sin(t) * r + center[1])
 
