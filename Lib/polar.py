@@ -16,8 +16,24 @@ def circle_points(center, radius, points=75, ratio=1):
         xmul = ratio
         ymul = 1
     for i in range(points):
-        x.append(center[0] + xmul * radius * numpy.cos(float(i) / points * numpy.pi * 2))
-        y.append(center[1] + ymul * radius * numpy.sin(float(i) / points * numpy.pi * 2))
+        x.append(
+            center[0] +
+            xmul *
+            radius *
+            numpy.cos(
+                float(i) /
+                points *
+                numpy.pi *
+                2))
+        y.append(
+            center[1] +
+            ymul *
+            radius *
+            numpy.sin(
+                float(i) /
+                points *
+                numpy.pi *
+                2))
     x.append(x[0])
     y.append(y[0])
     return x, y
@@ -241,12 +257,15 @@ class Gpo(vcsaddons.core.VCSaddon):
                 break
             below = v
         else:
-            return 1
+            return numpy.nan
+        if below is None:
+            return numpy.nan
 
         pct_between_levs = (value - below) / float(v - below)
         lower_lev_pos = (ind - 1) / float(len(scale) - 1)
         higher_lev_pos = ind / float(len(scale) - 1)
-        return pct_between_levs * (higher_lev_pos - lower_lev_pos) + lower_lev_pos
+        return pct_between_levs * \
+            (higher_lev_pos - lower_lev_pos) + lower_lev_pos
 
     def theta_from_value(self, value):
         if numpy.allclose((self.datawc_x1, self.datawc_x2), 1e20):
@@ -281,7 +300,8 @@ class Gpo(vcsaddons.core.VCSaddon):
             template = self.template
 
         if self.markercolorsource.lower() not in ("group", "magnitude", "theta"):
-            raise ValueError("polar.markercolorsource must be one of: 'group', 'magnitude', 'theta'")
+            raise ValueError(
+                "polar.markercolorsource must be one of: 'group', 'magnitude', 'theta'")
 
         magnitudes, thetas, names = convert_arrays(var, theta)
         if self.group_names:
@@ -364,8 +384,18 @@ class Gpo(vcsaddons.core.VCSaddon):
                 if m_labels is not None:
                     if lev in mag_labels:
                         m_labels.string.append(mag_labels[lev])
-                        m_labels.x.append(xmul * lev_radius * numpy.cos(self.magnitude_tick_angle) + center[0])
-                        m_labels.y.append(ymul * lev_radius * numpy.sin(self.magnitude_tick_angle) + center[1])
+                        m_labels.x.append(
+                            xmul *
+                            lev_radius *
+                            numpy.cos(
+                                self.magnitude_tick_angle) +
+                            center[0])
+                        m_labels.y.append(
+                            ymul *
+                            lev_radius *
+                            numpy.sin(
+                                self.magnitude_tick_angle) +
+                            center[1])
                 m_ticks.x.append(x)
                 m_ticks.y.append(y)
             canvas.plot(m_ticks, **plot_kwargs)
@@ -384,8 +414,10 @@ class Gpo(vcsaddons.core.VCSaddon):
                 mintics = vcs.elements["list"][mintics]
 
             for mag in mintics:
-                mintic_radius = radius * self.magnitude_from_value(mag, m_scale)
-                x, y = circle_points(center, mintic_radius, ratio=window_aspect)
+                mintic_radius = radius * \
+                    self.magnitude_from_value(mag, m_scale)
+                x, y = circle_points(
+                    center, mintic_radius, ratio=window_aspect)
                 mag_mintics.x.append(x)
                 mag_mintics.y.append(y)
             canvas.plot(mag_mintics, **plot_kwargs)
@@ -396,8 +428,10 @@ class Gpo(vcsaddons.core.VCSaddon):
                 tick_thetas = list(numpy.arange(0, numpy.pi * 2, numpy.pi / 4))
                 tick_labels = {t: str(t) for t in tick_thetas}
             else:
-                d_theta = (self.datawc_x2 - self.datawc_x1) / float(self.theta_tick_count)
-                tick_thetas = numpy.arange(self.datawc_x1, self.datawc_x2 + .0001, d_theta)
+                d_theta = (self.datawc_x2 - self.datawc_x1) / \
+                    float(self.theta_tick_count)
+                tick_thetas = numpy.arange(
+                    self.datawc_x1, self.datawc_x2 + .0001, d_theta)
                 tick_labels = vcs.mklabels(tick_thetas)
         else:
             tick_thetas = self.xticlabels1.keys()
@@ -449,7 +483,9 @@ class Gpo(vcsaddons.core.VCSaddon):
         if template.legend.priority > 0:
             # Only labels that are set will show up in the legend
             label_count = len(names) - len([i for i in names if i is None])
-            labels = self.create_text(template.legend.texttable, template.legend.textorientation)
+            labels = self.create_text(
+                template.legend.texttable,
+                template.legend.textorientation)
             labels.x = []
             labels.y = []
             labels.string = []
@@ -463,7 +499,8 @@ class Gpo(vcsaddons.core.VCSaddon):
             line.width = self.linewidths
             line.priority = self.linepriority
 
-            # This is up here because when it's part of the main loop, we can lose "order" of points when we flatten them.
+            # This is up here because when it's part of the main loop, we can
+            # lose "order" of points when we flatten them.
             for mag, theta in zip(magnitudes, thetas):
                 x = []
                 y = []
@@ -471,6 +508,8 @@ class Gpo(vcsaddons.core.VCSaddon):
                 for m, t in zip(mag, theta):
                     t = self.theta_from_value(t)
                     r = self.magnitude_from_value(m, m_scale) * radius
+                    if r == numpy.nan:
+                        continue
                     x.append(xmul * numpy.cos(t) * r + center[0])
                     y.append(ymul * numpy.sin(t) * r + center[1])
 
@@ -499,7 +538,8 @@ class Gpo(vcsaddons.core.VCSaddon):
             magnitudes = [mag_flat[inds] for inds in indices]
             thetas = [theta_flat[inds] for inds in indices]
             names = vcs.mklabels(scale, output="list")
-            names = [names[i] + " - " + names[i + 1] for i in range(len(names) - 1)]
+            names = [names[i] + " - " + names[i + 1]
+                     for i in range(len(names) - 1)]
             label_count = len(names)
 
         for mag, theta, name in zip(magnitudes, thetas, names):
@@ -512,7 +552,8 @@ class Gpo(vcsaddons.core.VCSaddon):
                 y.append(ymul * numpy.sin(t) * r + center[1])
 
             if template.legend.priority > 0 and name is not None:
-                y_offset = len(labels.x) / float(label_count) * (template.legend.y2 - template.legend.y1)
+                y_offset = len(labels.x) / float(label_count) * \
+                    (template.legend.y2 - template.legend.y1)
                 lx, ly = template.legend.x1, template.legend.y1 + y_offset
                 x.append(lx)
                 y.append(ly)
@@ -561,9 +602,6 @@ class Gpo(vcsaddons.core.VCSaddon):
         return canvas
 
 
-
-
-
 def init_polar():
     # Create nice polar template
     try:
@@ -610,7 +648,10 @@ def init_polar():
         i: str(i) for i in range(0, 24, 3)
     }
 
-    clock_24_meridiem = Gpo("diurnal_12_hour", source="diurnal", template="polar_oned")
+    clock_24_meridiem = Gpo(
+        "diurnal_12_hour",
+        source="diurnal",
+        template="polar_oned")
     clock_24_meridiem.xticlabels1 = {
         0: "12 AM",
         3: "3 AM",
