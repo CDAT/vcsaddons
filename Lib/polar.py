@@ -175,7 +175,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.linecolors = ["black"]
             self.lines = ["solid"]
             self.linewidths = [1]
-            self.linepriority = 1
+            self.linepriority = 0
             # Nice default labels
             self.xticlabels1 = {
                 0: "0 (2pi)",
