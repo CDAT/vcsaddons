@@ -304,7 +304,10 @@ class Gpo(vcsaddons.core.VCSaddon):
     def theta_from_value(self, value):
         if numpy.allclose((self.datawc_x1, self.datawc_x2), 1e20):
             # No scale specified, just use the value as theta
-            return value + self.theta_offset
+            if self.clockwise:
+                return -(value + self.theta_offset)
+            else:
+                return value + self.theta_offset
 
         minval = self.datawc_x1
         maxval = self.datawc_x2
