@@ -52,9 +52,9 @@ class Gyf(VCSaddon):
             data.getAxis(-1).getBounds()
             cdms2.setAutoBounds(mode)
 
-        while data.rank()>1:
+        while data.ndim>1:
             data = data[0]
-        while data2.rank()>1:
+        while data2.ndim>1:
             data2 = data2[0]
 
         # ok now we have a good x and a good data

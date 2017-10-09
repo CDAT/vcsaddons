@@ -161,7 +161,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         if source == "default":
             self.markersizes = [3]
             self.markercolors = ["black"]
-            self.markers = ["dot"]
+            self.markertypes = ["dot"]
             self.markercolorsource = "group"
             self.markerpriority = 2
             self.clockwise = False
@@ -170,6 +170,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.magnitude_ticks = "*"
             self.magnitude_mintics = None
             self.magnitude_tick_angle = 0
+            self.negative_magnitude = False
             self.group_names = []
             self.connect_groups = False
             self.linecolors = ["black"]
@@ -194,7 +195,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                 gm = source
             self.markersizes = gm.markersizes
             self.markercolors = gm.markercolors
-            self.markers = gm.markers
+            self.markertypes = gm.markertypes
             self.markercolorsource = gm.markercolorsource
             self.markerpriority = gm.markerpriority
             self.clockwise = gm.clockwise
@@ -207,9 +208,46 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.magnitude_ticks = gm.magnitude_ticks
             self.magnitude_mintics = gm.magnitude_mintics
             self.magnitude_tick_angle = gm.magnitude_tick_angle
+            self.negative_magnitude = gm.negative_magnitude
             self.theta_tick_count = gm.theta_tick_count
             self.group_names = gm.group_names
         self.to_cleanup = []
+
+    def list(self):
+        print 'graphics method = ',self.g_name
+        print 'name = ',self.name
+        print 'datawc_x1 = ',self.datawc_x1
+        print 'datawc_x2 = ',self.datawc_x2
+        print 'datawc_y1 = ',self.datawc_y1
+        print 'datawc_y2 = ',self.datawc_y2
+        print 'markersizes = ',self.markersizes
+        print 'markercolors = ',self.markercolors
+        print 'markertypes = ',self.markertypes
+        print 'markercolorsource = ',self.markercolorsource
+        print 'markerpriority = ',self.markerpriority
+        print 'clockwise = ',self.clockwise
+        print 'theta_offset = ',self.theta_offset
+        print 'theta_tick_count = ',self.theta_tick_count
+        print 'magnitude_ticks = ',self.magnitude_ticks
+        print 'magnitude_mintics = ',self.magnitude_mintics
+        print 'magnitude_tick_angle = ',self.magnitude_tick_angle
+        print 'negative_magnitude = ',self.negative_magnitude
+        print 'group_names = ',self.group_names
+        print 'connect_groups = ',self.connect_groups
+        print 'linecolors = ',self.linecolors
+        print 'lines = ',self.lines
+        print 'linewidths = ',self.linewidths
+        print 'linepriority = ',self.linepriority
+        print 'xmtics1 = ',self.xmtics1
+        print 'xmtics2 = ',self.xmtics2
+        print 'xticlabels1 = ',self.xticlabels1
+        print 'xticlabels2 = ',self.xticlabels2
+        print 'yticlabels1 = ',self.yticlabels1
+        print 'yticlabels2 = ',self.yticlabels2
+        print 'xaxisconvert = ',self.xaxisconvert
+        print 'yaxisconvert = ',self.yaxisconvert
+        print 'colormap = ',self.colormap
+        #print 'legend = ',self.legend
 
     def create_text(self, tt, to):
         tc = vcs.createtext(Tt_source=tt, To_source=to)
@@ -302,17 +340,17 @@ class Gpo(vcsaddons.core.VCSaddon):
                 "polar.markercolorsource must be one of: 'group', 'magnitude', 'theta'")
 
         magnitudes, thetas, names = convert_arrays(var, theta)
+        if not self.negative_magnitude: # negative amplitude means 180 degree shift
+            neg = numpy.ma.less(magnitudes,0.0)
+            magnitudes = numpy.ma.abs(magnitudes)
+            thetas = numpy.ma.where(neg,theta+numpy.pi,theta)
         if self.group_names:
             names = self.group_names
             while len(names) < len(magnitudes):
                 names.append(None)
 
-        flat_magnitude = []
-        for i in magnitudes:
-            flat_magnitude.extend(i)
-        flat_theta = []
-        for i in thetas:
-            flat_theta.extend(i)
+        flat_magnitude = numpy.ravel(magnitudes)
+        flat_theta = numpy.ma.ravel(thetas)
 
         canvas = x
         # Determine aspect ratio for plotting the circle
@@ -470,7 +508,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                     del vcs.elements["textcombined"][l.name]
 
         values = vcs.createmarker()
-        values.type = self.markers
+        values.type = self.markertypes
         values.size = self.markersizes
         values.color = self.markercolors
         values.colormap = self.colormap
