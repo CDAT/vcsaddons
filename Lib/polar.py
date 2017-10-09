@@ -153,6 +153,7 @@ def convert_arrays(var, theta):
 
 
 class Gpo(vcsaddons.core.VCSaddon):
+    __slots__ = ("markersizes","markercolors","markertypes", "markercolorsource","markerpriority", "clockwise","theta_offset","theta_tick_count", "magnitude_ticks","magnitude_mintics","magnitude_tick_angle","negative_magnitude","group_names","connect_groups","linecolors","linetypes","linewidths","linepriority","to_cleanup")
     def __init__(self, name=None, source="default", x=None, template=None):
         self.g_name = "Gpo"
         self.g_type = "polar_oned"
@@ -174,7 +175,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.group_names = []
             self.connect_groups = False
             self.linecolors = ["black"]
-            self.lines = ["solid"]
+            self.linetypes = ["solid"]
             self.linewidths = [1]
             self.linepriority = 0
             # Nice default labels
@@ -202,7 +203,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.linecolors = gm.linecolors
             self.linewidths = gm.linewidths
             self.linepriority = gm.linepriority
-            self.lines = gm.lines
+            self.linetypes = gm.linetypes
             self.connect_groups = gm.connect_groups
             self.theta_offset = gm.theta_offset
             self.magnitude_ticks = gm.magnitude_ticks
@@ -235,7 +236,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         print 'group_names = ',self.group_names
         print 'connect_groups = ',self.connect_groups
         print 'linecolors = ',self.linecolors
-        print 'lines = ',self.lines
+        print 'linetypes = ',self.linetypes
         print 'linewidths = ',self.linewidths
         print 'linepriority = ',self.linepriority
         print 'xmtics1 = ',self.xmtics1
@@ -244,10 +245,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         print 'xticlabels2 = ',self.xticlabels2
         print 'yticlabels1 = ',self.yticlabels1
         print 'yticlabels2 = ',self.yticlabels2
-        print 'xaxisconvert = ',self.xaxisconvert
-        print 'yaxisconvert = ',self.yaxisconvert
         print 'colormap = ',self.colormap
-        #print 'legend = ',self.legend
 
     def create_text(self, tt, to):
         tc = vcs.createtext(Tt_source=tt, To_source=to)
@@ -530,7 +528,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             line = vcs.createline()
             line.x = []
             line.y = []
-            line.type = self.lines
+            line.type = self.linetypes
             line.color = self.linecolors if self.linecolors is not None else self.markercolors
             line.width = self.linewidths
             line.priority = self.linepriority
