@@ -239,12 +239,8 @@ class Gpo(vcsaddons.core.VCSaddon):
         print 'linetypes = ',self.linetypes
         print 'linewidths = ',self.linewidths
         print 'linepriority = ',self.linepriority
-        print 'xmtics1 = ',self.xmtics1
-        print 'xmtics2 = ',self.xmtics2
         print 'xticlabels1 = ',self.xticlabels1
-        print 'xticlabels2 = ',self.xticlabels2
         print 'yticlabels1 = ',self.yticlabels1
-        print 'yticlabels2 = ',self.yticlabels2
         print 'colormap = ',self.colormap
 
     def create_text(self, tt, to):
@@ -402,7 +398,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             m_ticks.y = []
 
             if template.ylabel1.priority > 0:
-                to = self.text_orientation_for_angle(self.magnitude_tick_angle,
+                to = self.text_orientation_for_angle(self.magnitude_tick_angle + self.theta_offset,
                                                      source=template.ylabel1.textorientation)
                 m_labels = self.create_text(template.ylabel1.texttable, to)
                 m_labels.x = []
@@ -425,13 +421,13 @@ class Gpo(vcsaddons.core.VCSaddon):
                             xmul *
                             lev_radius *
                             numpy.cos(
-                                self.magnitude_tick_angle) +
+                                self.magnitude_tick_angle + self.theta_offset) +
                             center[0])
                         m_labels.y.append(
                             ymul *
                             lev_radius *
                             numpy.sin(
-                                self.magnitude_tick_angle) +
+                                self.magnitude_tick_angle + self.theta_offset) +
                             center[1])
                 m_ticks.x.append(x)
                 m_ticks.y.append(y)
@@ -493,8 +489,8 @@ class Gpo(vcsaddons.core.VCSaddon):
                 y1 = center[1]
                 if t_labels is not None:
                     label = self.create_text(template.xlabel1.texttable,
-                                             self.text_orientation_for_angle(angle,
-                                                                             source=template.xlabel1.textorientation))
+                            self.text_orientation_for_angle(angle,
+                                source=template.xlabel1.textorientation))
                     label.string = [theta_labels[t]]
                     label.x = [x0]
                     label.y = [y0]
