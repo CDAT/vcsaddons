@@ -161,7 +161,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         self.x = None
         if source == "default":
             self.markersizes = [3]
-            self.markercolors = ["black"]
+            self.markercolors = ["blue"]
             self.markertypes = ["dot"]
             self.markercolorsource = "group"
             self.markerpriority = 2
@@ -180,14 +180,14 @@ class Gpo(vcsaddons.core.VCSaddon):
             self.linepriority = 0
             # Nice default labels
             self.xticlabels1 = {
-                0: "0 (2pi)",
-                numpy.pi / 4: "pi/4",
-                numpy.pi / 2: "pi/2",
-                numpy.pi * 3 / 4.: "3pi/4",
-                numpy.pi: "pi",
-                numpy.pi * 5 / 4.: "5pi/4",
-                numpy.pi * 3 / 2.: "3pi/2",
-                numpy.pi * 7 / 4.: "7pi/4",
+                0: r"0 (2$\pi$)",
+                numpy.pi / 4: r"$\frac{\pi}{4}$",
+                numpy.pi / 2: r"$\frac{\pi}{2}$",
+                numpy.pi * 3 / 4.: r"$\frac{3\pi}{4}$",
+                numpy.pi: r"$\pi$",
+                numpy.pi * 5 / 4.: r"$\frac{5\pi}{4}$",
+                numpy.pi * 3 / 2.: r"$\frac{3\pi}{2}$",
+                numpy.pi * 7 / 4.: r"$\frac{7\pi}{4}$",
             }
         else:
             if isinstance(source, (str, unicode)):
@@ -563,7 +563,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                 scale = m_scale
                 vals = mag_flat
             else:
-                scale = theta_ticks
+                scale = tick_thetas
                 vals = theta_flat
 
             indices = [numpy.where(numpy.logical_and(vals >= scale[i], vals <= scale[i + 1]))
@@ -665,6 +665,7 @@ def init_polar():
         pass
     # Create some nice default polar GMs
     degree_polar = Gpo("degrees", template="polar_oned")
+    degree_polar.negative_magnitude = True
     degree_polar.datawc_x1 = 0
     degree_polar.datawc_x2 = 360
     degree_polar.xticlabels1 = {
@@ -672,6 +673,7 @@ def init_polar():
     }
 
     clock_24 = Gpo("diurnal", template="polar_oned")
+    clock_24.negative_magnitude = True
     clock_24.datawc_x1 = 0
     clock_24.datawc_x2 = 24
     clock_24.clockwise = True
@@ -697,6 +699,7 @@ def init_polar():
     }
 
     clock_12 = Gpo("semidiurnal", source="diurnal", template="polar_oned")
+    clock_12.negative_magnitude = True
     clock_12.datawc_x2 = 12
     clock_12.xticlabels1 = {
         i: str(i) for i in range(3, 13, 3)
@@ -705,6 +708,7 @@ def init_polar():
     clock_12.theta_offset = -3
 
     annual_cycle = Gpo("annual_cycle", template="polar_oned")
+    annual_cycle.negative_magnitude = True
     annual_cycle.datawc_x1 = 1
     annual_cycle.datawc_x2 = 13
     annual_cycle.clockwise = True
@@ -726,6 +730,7 @@ def init_polar():
     annual_cycle.theta_offset = -2
 
     seasonal = Gpo("seasonal", template="polar_oned")
+    seasonal.negative_magnitude = True
     seasonal.datawc_x1 = 0
     seasonal.datawc_x2 = 4
     seasonal.xticlabels1 = {0: "DJF", 1: "MAM", 2: "JJA", 3: "SON"}

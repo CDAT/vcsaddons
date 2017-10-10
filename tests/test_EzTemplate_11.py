@@ -28,6 +28,7 @@ class VCSAddonTest(basetest.BaseTest):
             yx.linecolor=241+i
             yx.datawc_y1=-1.
             yx.datawc_y2=1.
+            y.id = str(i)
             t = OD.get()
             self.x.plot(y,t,yx,bg=bg)
         self.checkImage('test_EzTemplate_11.png')
