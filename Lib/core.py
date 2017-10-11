@@ -2,6 +2,8 @@ import vcsaddons,vcs
 import numpy
 
 class VCSaddon(object):
+    __slots__ = ["x","template","datawc_x1","datawc_x2","datawc_y1","datawc_y2","xmtics1","xmtics2","xticlabels1","xticlabels2","yticlabels1","yticlabels2","colormap","ymtics2","ymtics1","xaxisconvert","yaxisconvert","color_1","color_2","legend","projection","g_name","name","g_type","_saves","g_nslabs"]
+
     def __init__(self,name=None,source='default',x=None,template=None):
         self._saves={}
         self.g_nslabs=1
