@@ -2,6 +2,7 @@
 ls
 pwd
 export PATH=${HOME}/miniconda/bin:${PATH}
-conda install -c uvcdat/label/nightly -c conda-forge -c uvcdat vtk-cdat cdutil genutil dv3d vcs mesalib nose image-compare flake8 matplotlib six
+conda install -c uvcdat/label/nightly -c conda-forge -c uvcdat vtk-cdat cdutil genutil dv3d vcs mesalib nose image-compare flake8 matplotlib
+conda install -f -c conda-forge -c uvcdat six
 export UVCDAT_ANONYMOUS_LOG=False
 python setup.py install
