@@ -486,7 +486,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                     self.datawc_x1, self.datawc_x2 + .0001, d_theta)
                 tick_labels = vcs.mklabels(tick_thetas)
         else:
-            tick_thetas = list(self.xticlabels1.keys())
+            tick_thetas = sorted(list(self.xticlabels1.keys()))
             tick_labels = self.xticlabels1
 
         if template.xtic1.priority > 0:
