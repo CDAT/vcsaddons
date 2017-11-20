@@ -153,7 +153,27 @@ def convert_arrays(var, theta):
 
 
 class Gpo(vcsaddons.core.VCSaddon):
-    __slots__ = ("markersizes","markercolors","markertypes", "markercolorsource","markerpriority", "clockwise","theta_offset","theta_tick_count", "magnitude_ticks","magnitude_mintics","magnitude_tick_angle","negative_magnitude","group_names","connect_groups","linecolors","linetypes","linewidths","linepriority","to_cleanup")
+    __slots__ = (
+        "markersizes",
+        "markercolors",
+        "markertypes",
+        "markercolorsource",
+        "markerpriority",
+        "clockwise",
+        "theta_offset",
+        "theta_tick_count",
+        "magnitude_ticks",
+        "magnitude_mintics",
+        "magnitude_tick_angle",
+        "negative_magnitude",
+        "group_names",
+        "connect_groups",
+        "linecolors",
+        "linetypes",
+        "linewidths",
+        "linepriority",
+        "to_cleanup")
+
     def __init__(self, name=None, source="default", x=None, template=None):
         self.g_name = "Gpo"
         self.g_type = "polar_oned"
@@ -190,7 +210,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                 numpy.pi * 7 / 4.: r"$\frac{7\pi}{4}$",
             }
         else:
-            if isinstance(source, (str, unicode)):
+            if isinstance(source, str):
                 gm = vcsaddons.gms[self.g_name][source]
             else:
                 gm = source
@@ -215,33 +235,33 @@ class Gpo(vcsaddons.core.VCSaddon):
         self.to_cleanup = []
 
     def list(self):
-        print 'graphics method = ',self.g_name
-        print 'name = ',self.name
-        print 'datawc_x1 = ',self.datawc_x1
-        print 'datawc_x2 = ',self.datawc_x2
-        print 'datawc_y1 = ',self.datawc_y1
-        print 'datawc_y2 = ',self.datawc_y2
-        print 'markersizes = ',self.markersizes
-        print 'markercolors = ',self.markercolors
-        print 'markertypes = ',self.markertypes
-        print 'markercolorsource = ',self.markercolorsource
-        print 'markerpriority = ',self.markerpriority
-        print 'clockwise = ',self.clockwise
-        print 'theta_offset = ',self.theta_offset
-        print 'theta_tick_count = ',self.theta_tick_count
-        print 'magnitude_ticks = ',self.magnitude_ticks
-        print 'magnitude_mintics = ',self.magnitude_mintics
-        print 'magnitude_tick_angle = ',self.magnitude_tick_angle
-        print 'negative_magnitude = ',self.negative_magnitude
-        print 'group_names = ',self.group_names
-        print 'connect_groups = ',self.connect_groups
-        print 'linecolors = ',self.linecolors
-        print 'linetypes = ',self.linetypes
-        print 'linewidths = ',self.linewidths
-        print 'linepriority = ',self.linepriority
-        print 'xticlabels1 = ',self.xticlabels1
-        print 'yticlabels1 = ',self.yticlabels1
-        print 'colormap = ',self.colormap
+        print('graphics method = ', self.g_name)
+        print('name = ', self.name)
+        print('datawc_x1 = ', self.datawc_x1)
+        print('datawc_x2 = ', self.datawc_x2)
+        print('datawc_y1 = ', self.datawc_y1)
+        print('datawc_y2 = ', self.datawc_y2)
+        print('markersizes = ', self.markersizes)
+        print('markercolors = ', self.markercolors)
+        print('markertypes = ', self.markertypes)
+        print('markercolorsource = ', self.markercolorsource)
+        print('markerpriority = ', self.markerpriority)
+        print('clockwise = ', self.clockwise)
+        print('theta_offset = ', self.theta_offset)
+        print('theta_tick_count = ', self.theta_tick_count)
+        print('magnitude_ticks = ', self.magnitude_ticks)
+        print('magnitude_mintics = ', self.magnitude_mintics)
+        print('magnitude_tick_angle = ', self.magnitude_tick_angle)
+        print('negative_magnitude = ', self.negative_magnitude)
+        print('group_names = ', self.group_names)
+        print('connect_groups = ', self.connect_groups)
+        print('linecolors = ', self.linecolors)
+        print('linetypes = ', self.linetypes)
+        print('linewidths = ', self.linewidths)
+        print('linepriority = ', self.linepriority)
+        print('xticlabels1 = ', self.xticlabels1)
+        print('yticlabels1 = ', self.yticlabels1)
+        print('colormap = ', self.colormap)
 
     def create_text(self, tt, to):
         tc = vcs.createtext(Tt_source=tt, To_source=to)
@@ -337,17 +357,16 @@ class Gpo(vcsaddons.core.VCSaddon):
                 "polar.markercolorsource must be one of: 'group', 'magnitude', 'theta'")
 
         magnitudes, thetas, names = convert_arrays(var, theta)
-        if not self.negative_magnitude: # negative amplitude means 180 degree shift
-            neg = numpy.ma.less(magnitudes,0.0)
+        if not self.negative_magnitude:  # negative amplitude means 180 degree shift
+            neg = numpy.ma.less(magnitudes, 0.0)
             magnitudes = numpy.ma.abs(magnitudes)
-            thetas = numpy.ma.where(neg,theta+numpy.pi,theta)
+            thetas = numpy.ma.where(neg, theta + numpy.pi, theta)
         if self.group_names:
             names = self.group_names
             while len(names) < len(magnitudes):
                 names.append(None)
 
         flat_magnitude = numpy.ravel(magnitudes)
-        flat_theta = numpy.ma.ravel(thetas)
 
         canvas = x
         # Determine aspect ratio for plotting the circle
@@ -384,7 +403,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             if self.magnitude_ticks == "*":
                 m_scale = vcs.mkscale(*vcs.minmax(flat_magnitude))
             else:
-                if isinstance(self.magnitude_ticks, (str, unicode)):
+                if isinstance(self.magnitude_ticks, str):
                     ticks = vcs.elements["list"][self.magnitude_ticks]
                 else:
                     ticks = self.magnitude_ticks
@@ -443,7 +462,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             mag_mintics.y = []
 
             mintics = self.magnitude_mintics
-            if isinstance(mintics, (str, unicode)):
+            if isinstance(mintics, str):
                 mintics = vcs.elements["list"][mintics]
 
             for mag in mintics:
@@ -467,7 +486,7 @@ class Gpo(vcsaddons.core.VCSaddon):
                     self.datawc_x1, self.datawc_x2 + .0001, d_theta)
                 tick_labels = vcs.mklabels(tick_thetas)
         else:
-            tick_thetas = self.xticlabels1.keys()
+            tick_thetas = sorted(list(self.xticlabels1.keys()))
             tick_labels = self.xticlabels1
 
         if template.xtic1.priority > 0:
@@ -489,8 +508,8 @@ class Gpo(vcsaddons.core.VCSaddon):
                 y1 = center[1]
                 if t_labels is not None:
                     label = self.create_text(template.xlabel1.texttable,
-                            self.text_orientation_for_angle(angle,
-                                source=template.xlabel1.textorientation))
+                                             self.text_orientation_for_angle(angle,
+                                                                             source=template.xlabel1.textorientation))
                     label.string = [theta_labels[t]]
                     label.x = [x0]
                     label.y = [y0]
@@ -523,7 +542,7 @@ class Gpo(vcsaddons.core.VCSaddon):
             labels.y = []
             labels.string = []
 
-        if self.linepriority>0:
+        if self.linepriority > 0:
             line = vcs.createline()
             line.x = []
             line.y = []
@@ -599,7 +618,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         if template.legend.priority > 0:
             canvas.plot(labels, **plot_kwargs)
             del vcs.elements["textcombined"][labels.name]
-        if self.linepriority>0:
+        if self.linepriority > 0:
             canvas.plot(line, **plot_kwargs)
             del vcs.elements["line"][line.name]
 
