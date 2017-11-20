@@ -1,9 +1,8 @@
-from core import VCSaddon
+from .core import VCSaddon, gms
 import cdms2
 import MV2
 import numpy
 import vcs
-import vcsaddons
 
 
 class Ghg(VCSaddon):
@@ -21,8 +20,8 @@ class Ghg(VCSaddon):
             self.fillareacolors = []
             self.bins = []
         else:
-            if isinstance(source, (str, unicode)):
-                gm = vcsaddons.gms[self.g_name][source]
+            if isinstance(source, str):
+                gm = gms[self.g_name][source]
             else:
                 gm = source
             self.line = gm.line
@@ -34,16 +33,16 @@ class Ghg(VCSaddon):
             self.bins = gm.bins
 
     def list(self):
-        print '---------- Histogram (Ghg) member (attribute) listings ----------'  # pragma: no cover
-        print 'Canvas Mode = ', self.x.mode  # pragma: no cover
+        print('---------- Histogram (Ghg) member (attribute) listings ----------')  # pragma: no cover
+        print('Canvas Mode = ', self.x.mode)  # pragma: no cover
         VCSaddon.list(self)  # pragma: no cover
-        print 'fillareastyles = ', self.fillareastyles  # pragma: no cover
-        print 'fillareaindices = ', self.fillareaindices  # pragma: no cover
-        print 'fillareacolors = ', self.fillareacolors  # pragma: no cover
-        print 'line = ', self.line  # pragma: no cover
-        print 'linewidth = ', self.linewidth  # pragma: no cover
-        print 'linecolors = ', self.linecolors  # pragma: no cover
-        print 'bins = ', self.bins  # pragma: no cover
+        print('fillareastyles = ', self.fillareastyles)  # pragma: no cover
+        print('fillareaindices = ', self.fillareaindices)  # pragma: no cover
+        print('fillareacolors = ', self.fillareacolors)  # pragma: no cover
+        print('line = ', self.line)  # pragma: no cover
+        print('linewidth = ', self.linewidth)  # pragma: no cover
+        print('linecolors = ', self.linecolors)  # pragma: no cover
+        print('bins = ', self.bins)  # pragma: no cover
 
     def plot(self, data, template=None, bg=0, x=None, **kwargs):
         if x is None:
@@ -53,7 +52,9 @@ class Ghg(VCSaddon):
         elif isinstance(template, str):
             template = x.gettemplate(template)
         elif not vcs.istemplate(template):  # pragma: no cover
-            raise ValueError("Error did not know what to do with template: %s" % template)  # pragma: no cover
+            raise ValueError(
+                "Error did not know what to do with template: %s" %
+                template)  # pragma: no cover
         try:
             data_name = data.title
         except AttributeError:
@@ -68,7 +69,8 @@ class Ghg(VCSaddon):
                     except AttributeError:
                         data_name = "array"
 
-        # We'll just flatten the data... if they want to be more precise, should pass in more precise data
+        # We'll just flatten the data... if they want to be more precise,
+        # should pass in more precise data
         if isinstance(data, cdms2.avariable.AbstractVariable):
             data = data.asma()
         data = data.flatten()
@@ -88,7 +90,7 @@ class Ghg(VCSaddon):
             pruned_bins.append(bin)
         self.bins = pruned_bins
         data_bins = numpy.digitize(data, self.bins) - 1
-        binned = [data[data_bins==i] for i in range(len(self.bins))]
+        binned = [data[data_bins == i] for i in range(len(self.bins))]
         means = []
         stds = []
 
@@ -102,9 +104,11 @@ class Ghg(VCSaddon):
                 means.append(0)
                 stds.append(0)
             if len(self.bins) > ind + 1:
-                max_possible_deviance = max(means[ind] - self.bins[ind], self.bins[ind + 1] - means[ind], max_possible_deviance)
+                max_possible_deviance = max(
+                    means[ind] - self.bins[ind], self.bins[ind + 1] - means[ind], max_possible_deviance)
             else:
-                max_possible_deviance = max(means[ind] - self.bins[ind], max_possible_deviance)
+                max_possible_deviance = max(
+                    means[ind] - self.bins[ind], max_possible_deviance)
         color_values = [std / max_possible_deviance for std in stds]
         y_values = [len(databin) for databin in binned]
         nbars = len(self.bins) - 1
@@ -165,7 +169,8 @@ class Ghg(VCSaddon):
                 self.fillareacolors.append(self.fillareacolors[-1])
         else:
             for lev in levels[:-1]:
-                self.fillareacolors.append(int((self.color_2 - self.color_1) * lev) + self.color_1)
+                self.fillareacolors.append(
+                    int((self.color_2 - self.color_1) * lev) + self.color_1)
 
         if self.fillareaindices:
             while len(self.fillareaindices) < (len(levels) - 1):
@@ -211,7 +216,8 @@ class Ghg(VCSaddon):
             lw.append(self.linewidth[lev_ind])
             lc.append(self.linecolors[lev_ind])
 
-            xs.append([self.bins[i], self.bins[i], self.bins[i + 1], self.bins[i + 1]])
+            xs.append([self.bins[i], self.bins[i],
+                       self.bins[i + 1], self.bins[i + 1]])
             ys.append([0, y_values[i], y_values[i], 0])
 
         fill.style = styles

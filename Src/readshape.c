@@ -1,3 +1,4 @@
+#include <py3c.h>
 #include <Python.h>
 #include "shapefil.h"
 
@@ -63,7 +64,7 @@ static PyObject *readdbffile(     PyObject *self, PyObject *args)
 	    switch( eType )
 	      {
 	      case FTString:
-		PyList_Append(list,PyString_FromString(DBFReadStringAttribute( hDBF, iRecord, i )));
+		PyList_Append(list,PyStr_FromString(DBFReadStringAttribute( hDBF, iRecord, i )));
 		break;
                 
 	      case FTInteger:
@@ -209,21 +210,32 @@ static PyObject *readshapefile(     PyObject *self, PyObject *args)
    return outlist;
 }
 
-static PyMethodDef MyExtractMethods[]= {
+static PyMethodDef gis_methods[]= {
   {"readshapefile", readshapefile , METH_VARARGS},
   {"readdbffile", readdbffile , METH_VARARGS},
   {NULL, NULL} /*sentinel */
 };
 
-void 
-init_gis()
+static struct PyModuleDef moduledef = {
+  PyModuleDef_HEAD_INIT, /* m_base */
+  "_gis", /* m_name */
+  NULL, /* m_doc */
+  -1, /* m_size */
+  gis_methods, /* m_methods */
+};
+
+MODULE_INIT_FUNC(_gis)
 {
-  (void) Py_InitModule("_gis", MyExtractMethods);  
+    PyObject *m;
+    m = PyModule_Create(&moduledef);
+    return (m);
 }
 
 int main(int argc,char **argv)
 {
-  Py_SetProgramName(argv[0]);
+  Py_SetProgramName((wchar_t *) argv[0]);
   Py_Initialize();
-  init_gis();}
+  PyInit__gis();
+  return (0);
+}
 

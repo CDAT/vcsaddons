@@ -25,7 +25,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             del(self.yticlabels2)
             del(self.ymtics2)
         else:
-            if isinstance(source, (str, unicode)):
+            if isinstance(source, str):
                 gm = vcsaddons.gms[self.g_type][source]
             else:
                 gm = source
@@ -40,41 +40,41 @@ class Gpc(vcsaddons.core.VCSaddon):
             self.yticlabels = gm.yticlabels
 
     def list(self):
-        print 'graphics method = ', self.g_name
-        print 'name = ', self.name
-        print 'datawc_x1 = ', self.datawc_x1
-        print 'datawc_x2 = ', self.datawc_x2
-        print 'datawc_y1 = ', self.datawc_y1
-        print 'datawc_y2 = ', self.datawc_y2
-        print 'xmtics1 = ', self.xmtics1
-        print 'xmtics2 = ', self.xmtics2
-        print 'ymtics = ', self.ymtics
-        print 'xticlabels1 = ', self.xticlabels1
-        print 'xticlabels2 = ', self.xticlabels2
-        print 'yticlabels = ', self.yticlabels
-        print 'xaxisconvert = ', self.xaxisconvert
-        print 'yaxisconvert = ', self.yaxisconvert
+        print('graphics method = ', self.g_name)
+        print('name = ', self.name)
+        print('datawc_x1 = ', self.datawc_x1)
+        print('datawc_x2 = ', self.datawc_x2)
+        print('datawc_y1 = ', self.datawc_y1)
+        print('datawc_y2 = ', self.datawc_y2)
+        print('xmtics1 = ', self.xmtics1)
+        print('xmtics2 = ', self.xmtics2)
+        print('ymtics = ', self.ymtics)
+        print('xticlabels1 = ', self.xticlabels1)
+        print('xticlabels2 = ', self.xticlabels2)
+        print('yticlabels = ', self.yticlabels)
+        print('xaxisconvert = ', self.xaxisconvert)
+        print('yaxisconvert = ', self.yaxisconvert)
 
     def drawYAxes(self, mins, maxs, labels, template, X, bg):
         N = len(labels)
-        l = X.createline(source=template.xtic1.line)
-        l.viewport = [template.data.x1, template.data.x2,
-                      template.data.y1, template.data.y2]
+        ln_tmp = X.createline(source=template.xtic1.line)
+        ln_tmp.viewport = [template.data.x1, template.data.x2,
+                           template.data.y1, template.data.y2]
         ys = [[0, 1]] * N
         xs = [[x / (N - 1.), x / (N - 1.)] for x in range(N)]
 
-        l.x = xs
-        l.y = ys
-        l.priority = template.xtic1.priority
-        X.plot(l, bg=bg, render=False)
+        ln_tmp.x = xs
+        ln_tmp.y = ys
+        ln_tmp.priority = template.xtic1.priority
+        X.plot(ln_tmp, bg=bg, render=False)
 
-        l = X.createline(source=template.box1.line)
-        l.viewport = [template.data.x1, template.data.x2,
-                      template.data.y1, template.data.y2]
-        l.x = [[0, 1, 1, 0, 0]]
-        l.y = [[0, 0, 1, 1, 0]]
-        l.priority = template.box1.priority
-        X.plot(l, bg=bg, render=False)
+        ln_tmp = X.createline(source=template.box1.line)
+        ln_tmp.viewport = [template.data.x1, template.data.x2,
+                           template.data.y1, template.data.y2]
+        ln_tmp.x = [[0, 1, 1, 0, 0]]
+        ln_tmp.y = [[0, 0, 1, 1, 0]]
+        ln_tmp.priority = template.box1.priority
+        X.plot(ln_tmp, bg=bg, render=False)
 
         l1 = X.createline(source=template.ytic1.line)
         l2 = X.createline(source=template.ytic2.line)
@@ -119,11 +119,11 @@ class Gpc(vcsaddons.core.VCSaddon):
                     ye2.append([Y, Y])
                 d2 = abs(template.ytic2.x2 - template.ytic2.x1)
                 xs2.append([x + d2, x])
-        l1.viewport = l.viewport
-        l2.viewport = l.viewport
+        l1.viewport = ln_tmp.viewport
+        l2.viewport = ln_tmp.viewport
         le1.viewport = [0, 1, template.data.y1, template.data.y2]
         le2.viewport = [0, 1, template.data.y1, template.data.y2]
-        txt.viewport = l.viewport
+        txt.viewport = ln_tmp.viewport
         l1.x = xs1
         l1.y = ys
         l2.x = xs2
@@ -204,12 +204,12 @@ class Gpc(vcsaddons.core.VCSaddon):
         else:
             lbls2m = self.xmtics2
 
-        for l, lbls in enumerate([lbls1, lbls1m, lbls2, lbls2m]):
+        for l_tmp, lbls in enumerate([lbls1, lbls1m, lbls2, lbls2m]):
             ln = x.createline(source=t.xtic1.line)
             xs = []
             ys = []
-            if l % 2 == 0:
-                if l == 0:
+            if l_tmp % 2 == 0:
+                if l_tmp == 0:
                     txt = x.createtext(To_source=t.xlabel1.textorientation,
                                        Tt_source=t.xlabel1.texttable)
                 else:
@@ -220,31 +220,31 @@ class Gpc(vcsaddons.core.VCSaddon):
                 ts = []
             for loc in lbls:
                 xs.append([loc, loc])
-                if l == 0:
+                if l_tmp == 0:
                     ys.append([t.xtic1.y1, t.xtic1.y2])
                     txs.append(loc)
                     tys.append(t.xlabel1.y)
                     ts.append(lbls[loc])
                     ln.priority = t.xtic1.priority
                     txt.priority = t.xlabel1.priority
-                elif l == 1:
+                elif l_tmp == 1:
                     ys.append([t.xmintic1.y1, t.xmintic1.y2])
                     ln.priority = t.xmintic1.priority
-                elif l == 2:
+                elif l_tmp == 2:
                     ys.append([t.xtic2.y1, t.xtic2.y2])
                     txs.append(loc)
                     tys.append(t.xlabel2.y)
                     ts.append(lbls[loc])
                     ln.priority = t.xtic2.priority
                     txt.priority = t.xlabel2.priority
-                elif l == 3:
+                elif l_tmp == 3:
                     ys.append([t.xmintic2.y1, t.xmintic2.y2])
                     ln.priority = t.xmintic2.priority
             ln.x = xs
             ln.y = ys
             ln.viewport = [t.data.x1, t.data.x2, 0, 1]
             x.plot(ln, bg=bg, render=False)
-            if l % 2 == 0:  # text on
+            if l_tmp % 2 == 0:  # text on
                 txt.viewport = ln.viewport
                 txt.x = txs
                 txt.y = tys
@@ -268,9 +268,9 @@ class Gpc(vcsaddons.core.VCSaddon):
             exec("while len(%s) < nlines: %s+=[%s[-1]]" % (att, att, att))
 
         if self.linecolors is None:
-            linecolors = vcs.getcolors(range(nlines + 1))
+            linecolors = vcs.getcolors(list(range(nlines + 1)))
         if self.markercolors is None:
-            markercolors = vcs.getcolors(range(nlines + 1))
+            markercolors = vcs.getcolors(list(range(nlines + 1)))
 
         # Mark fully missing models
         scratched = []
@@ -294,17 +294,17 @@ class Gpc(vcsaddons.core.VCSaddon):
 
         for i in range(nlines):
             if data[:, i].count() > 0:
-                l = vcs.create1d()
-                l.colormap = self.colormap
-                l.linecolor = linecolors[i]
-                l.linewidth = linewidths[i]  # noqa
-                l.linetype = linetypes[i]  # noqa
-                l.marker = markertypes[i]  # noqa
-                l.markercolor = markercolors[i]
-                l.markersize = markersizes[i]  # noqa
-                l.datawc_y1 = 0.
-                l.datawc_y2 = 1.
+                ln_tmp = vcs.create1d()
+                ln_tmp.colormap = self.colormap
+                ln_tmp.linecolor = linecolors[i]
+                ln_tmp.linewidth = linewidths[i]  # noqa
+                ln_tmp.linetype = linetypes[i]  # noqa
+                ln_tmp.marker = markertypes[i]  # noqa
+                ln_tmp.markercolor = markercolors[i]
+                ln_tmp.markersize = markersizes[i]  # noqa
+                ln_tmp.datawc_y1 = 0.
+                ln_tmp.datawc_y2 = 1.
                 if i < nlines - 1:
-                    x.plot(data[:, i], t, l, bg=bg, render=False)
+                    x.plot(data[:, i], t, ln_tmp, bg=bg, render=False)
                 else:
-                    x.plot(data[:, i], t, l, bg=bg, render=render)
+                    x.plot(data[:, i], t, ln_tmp, bg=bg, render=render)
