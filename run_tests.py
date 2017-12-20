@@ -132,7 +132,7 @@ def run_command(command, join_stderr=True):
     out = []
     while P.poll() is None:
         read = P.stdout.readline().rstrip()
-        out.append(read)
+        out.append(str(read))
         if args.verbosity > 1 and len(read) != 0:
             print(read)
     return P, out

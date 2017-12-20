@@ -24,6 +24,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             del(self.ymtics1)
             del(self.yticlabels2)
             del(self.ymtics2)
+            self.smalestfontsize = None
         else:
             if isinstance(source, str):
                 gm = vcsaddons.gms[self.g_type][source]
@@ -38,6 +39,7 @@ class Gpc(vcsaddons.core.VCSaddon):
             self.linetypes = gm.linetypes
             self.linewidths = gm.linewidths
             self.yticlabels = gm.yticlabels
+            self.smalestfontsize = gm.smallestfontsize
 
     def list(self):
         print('graphics method = ', self.g_name)
@@ -54,6 +56,13 @@ class Gpc(vcsaddons.core.VCSaddon):
         print('yticlabels = ', self.yticlabels)
         print('xaxisconvert = ', self.xaxisconvert)
         print('yaxisconvert = ', self.yaxisconvert)
+        print('markercolors = ', self.markercolors)
+        print('markersizes = ', self.markersizes)
+        print('markertypes = ', self.markertypes)
+        print('linecolors = ', self.linecolors)
+        print('linetypes = ', self.linetypes)
+        print('linewidths = ', self.linewidths)
+        print('smalestfontsize = ', self.smallestfontsize)
 
     def drawYAxes(self, mins, maxs, labels, template, X, bg):
         N = len(labels)
@@ -284,7 +293,8 @@ class Gpc(vcsaddons.core.VCSaddon):
                                     linecolors, linetypes, linewidths,  # noqa
                                     markercolors, markertypes, markersizes,  # noqa
                                     [str(v) for v in array.getAxis(-1)],
-                                    bg=bg, render=False, scratched=scratched)
+                                    bg=bg, render=False, scratched=scratched,
+                                    smallestfontsize=self.smallestfontsize)
 
         lst = ["max", "min", "mean"]
         t.blank(lst)
