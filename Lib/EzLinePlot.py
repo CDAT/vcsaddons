@@ -8,7 +8,9 @@ import sys
 
 class EzLinePlot(object):
     """
-    ##
+    Draws 1D plots.
+    Auto adjust axis ranges, colors, line widths, etc in order
+    to generating beautiful plots.
     """
     __default_linecolors = [[12.2, 46.7, 70.6], [100.0, 49.8, 5.5],
                          [17.25, 62.75, 17.25], [83.92, 15.29, 15.69],
@@ -376,6 +378,7 @@ class EzLinePlot(object):
 
         # Creates the base template
         templates = EzTemplate.oneD(len(data), template=template)
+        templates.x = canvas
 
         # Creates the legend's template
         legendTemplate = vcs.createtemplate(source=template.name)
@@ -683,7 +686,7 @@ class EzLinePlot(object):
                 templateT.ytic2.line = lineG
                 templateT.xtic2.line = lineG
                 
-            templates.x.plot(data[n], gm, templateT, bg=True)
+            display = templates.x.plot(data[n], gm, templateT, bg=True)
 
 
         # Build Legend  
@@ -710,6 +713,6 @@ class EzLinePlot(object):
                 titleObj = title
 
             if titleObj is not None:
-                templates.x.plot(titleObj)
+                display = templates.x.plot(titleObj)
 
         return templates.x
