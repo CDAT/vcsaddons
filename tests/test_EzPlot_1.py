@@ -26,7 +26,7 @@ class EzPlotTest(basetest.BaseTest):
                 else:
                     var.append(math.cos(2*math.pi*float(i-v)/100.0))
             line_type += ["solid"]
-            line_widths += [6]
+            line_widths += [5]
             if i%2 == 0:
                 legend_texts += ["Sin"]
             else:    
@@ -39,9 +39,9 @@ class EzPlotTest(basetest.BaseTest):
 
         canvas = self.x
         
-        plotfunction.lineplot(data=variables, canvas=canvas, title="Simple 2 EzLinePlot",
-                              linetypes=line_type, linewidths=line_widths,   
-                              legendposition=[0.15, 0.25, 0.70, 0.80], legendtextcolors=legend_text_colors, legendtexts=legend_texts,
+        plotfunction.lineplot(data=variables, canvas=canvas, title="Simple 2 EzLinePlot", titlesize=30,
+                              linetypes=line_type, linewidths=line_widths,
+                              legendposition=[0.25, 0.35, 0.30, 0.40], legendtextcolors=legend_text_colors, legendtexts=legend_texts,
                               legendbackgroundcolor="yellow",
                               enablegrid=True)
 

@@ -13,7 +13,7 @@ class EzPlotTest(basetest.BaseTest):
 
         plotfunction = vcsaddons.EzPlot.EzLinePlot(defaultgridcolor=[(50, 50, 50, 50)])
 
-        canvas = vcs.init()
+        canvas = self.x
 
         # Customize the lines used to draw the plots
         line_type  = ["solid"]
