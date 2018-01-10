@@ -8,9 +8,7 @@ import sys
 
 class EzLinePlot(object):
     """
-    Draws 1D plots.
-    Auto adjust axis ranges, colors, line widths, etc in order
-    to generating beautiful plots.
+    ##
     """
     __default_linecolors = [[12.2, 46.7, 70.6], [100.0, 49.8, 5.5],
                          [17.25, 62.75, 17.25], [83.92, 15.29, 15.69],
@@ -62,7 +60,8 @@ class EzLinePlot(object):
     def __check_values(self, data, canvas, template, 
                     line, linetypes, linewidths, linecolors,
                     backgroundcolor, colormap, randomcolor,
-                    title, left_label, right_label, bottom_label, top_label,
+                    title, titlesize, left_label, right_label, bottom_label, top_label,
+                    verticallabelsize, horizontallabelsize,
                     marker, markercolors, markertypes, markersizes,
                     legendtexts, legendscratched, legendtextcolors, legendposition,
                     legendstacking, legenddrawbackground, legendbackgroundcolor,
@@ -128,6 +127,10 @@ class EzLinePlot(object):
         if title is not None:
             if isinstance(title, str) is False and isinstance(title, vcs.textcombined.Tc) is False:
                 raise ValueError('title must be an object name (str) or a VCS text.')
+
+        if titlesize is not None:
+            if isinstance(titlesize, int) is False:
+                raise ValueError('titlesize must be an integer representing the font size.')
 
         if marker is not None:
             if isinstance(marker, str) is False and isinstance(marker, vcs.marker.Tm) is False:
@@ -195,6 +198,14 @@ class EzLinePlot(object):
         if legendposition is not None:
             if isinstance(legendposition, list) is False and len(legendposition) != 4:
                 raise ValueError('legendposition must be a list of 4 float values.')
+
+        if verticallabelsize is not None:
+            if isinstance(verticallabelsize, int) is False:
+                raise ValueError('verticallabelsize must be an integer with the font size.')
+
+        if horizontallabelsize is not None:
+            if isinstance(horizontallabelsize, int) is False:
+                raise ValueError('horizontallabelsize must be an integer with the font size.')
     
     def __calculate_new_range_y(self, data, y_labels, tick_sides, min_vals, max_vals):
         # Beautiful plots are not packed. Lets increase the
@@ -257,12 +268,14 @@ class EzLinePlot(object):
     def lineplot(self, data=None, canvas=None, template=None, line=None,
                  linetypes=None, linewidths=None, linecolors=None,
                  backgroundcolor=None, colormap=None, randomcolor=False,
-                 title=None, left_label=None, right_label=None, bottom_label=None, top_label=None,
+                 title=None, titlesize=None, left_label=None, right_label=None, bottom_label=None, top_label=None,
+                 verticallabelsize=None, horizontallabelsize=None,
                  marker=None, markercolors=None, markertypes=None, markersizes=None,
                  legendtexts=None, legendscratched=None, legendtextcolors=None, legendposition=None,
                  legendstacking="horizontal", legenddrawbackground=False, legendbackgroundcolor=None,
                  legendsmallestfontsize=None, tick_sides=None, framewidth=None,
-                 autoxaxis=True, autoyaxis=True, min_y=None, max_y=None, min_x=None, max_x=None, x_labels="*", y_labels="*",
+                 autoxaxis=True, autoyaxis=True, min_y=None, max_y=None, min_x=None, max_x=None,
+                 x_labels="*", y_labels="*",
                  enablegrid=False):
         """
         This file is ready to be imported by your scripts, and you can just call this function.
@@ -280,6 +293,7 @@ class EzLinePlot(object):
         colormap: A valid VCS colormap. Set to None to hide.
         randomcolor: Set the line colors in a random way.
         title: A VCS text type or a string text for the plot title. Set to None to hide.
+        titlesize: If title is only a str, titlesize is used to define the font size for the title text.
         left_label: Text to put on the left Y axis. 
         right_label: Text to put on the right Y axis.
         bottom_label: Text to put on the bottom. 
@@ -306,13 +320,16 @@ class EzLinePlot(object):
         max_x: If you want to adjust the x axis bounds, you can set a maximum value. Will be derived from data if not specified.
         x_labels: Dictionary for setting axis tick labels
         y_labels: Dictionary for setting axis tick labels
+        horizontallabelsize: Font size for the x labels.
+        verticallabelsize:  Font size for the y labels.
         enablegrid: Boolean enabling/disabling the grid rendering.
         """
 
         self.__check_values(data, canvas, template, 
                     line, linetypes, linewidths, linecolors,
                     backgroundcolor, colormap, randomcolor,
-                    title, left_label, right_label, bottom_label, top_label,
+                    title, titlesize, left_label, right_label, bottom_label, top_label,
+                    verticallabelsize, horizontallabelsize,
                     marker, markercolors, markertypes, markersizes,
                     legendtexts, legendscratched, legendtextcolors, legendposition,
                     legendstacking, legenddrawbackground, legendbackgroundcolor,
@@ -379,7 +396,6 @@ class EzLinePlot(object):
         # Creates the base template
         templates = EzTemplate.oneD(len(data), template=template)
         templates.x = canvas
-
         # Creates the legend's template
         legendTemplate = vcs.createtemplate(source=template.name)
         legendTemplate.legend.priority = 1
@@ -591,6 +607,7 @@ class EzLinePlot(object):
                                                    To_source=templateT.yname.textorientation)
                         left_text.x = templateT.yname.x
                         left_text.y = templateT.yname.y
+                        left_text.height = verticallabelsize if verticallabelsize is not None else left_text.height
                         left_text.string = [left_label]
                         templates.x.plot(left_text)
                 else:
@@ -609,6 +626,7 @@ class EzLinePlot(object):
                                                     To_source=templateT.yname.textorientation)
                         right_text.x = templateT.data.x2 + (templateT.data.x1 - templateT.yname.x)
                         right_text.y = templateT.yname.y
+                        right_text.height = verticallabelsize if verticallabelsize is not None else right_text.height
                         right_text.string = [right_label]
                         templates.x.plot(right_text)
                 else:
@@ -621,7 +639,8 @@ class EzLinePlot(object):
                 templateT.xname.priority = 0
             
             if tick_sides2[n] == "bottom":
-                if tick_sides2.index("bottom") == n:
+                #if tick_sides2.index("bottom") == n:
+                if tick_sides2[n] == "bottom":
                     templateT.xlabel1.priority = 1
                     if bottom_label is not None:
                         templateT.xname.priority = 0
@@ -629,6 +648,7 @@ class EzLinePlot(object):
                                                      To_source=templateT.xname.textorientation)
                         bottom_text.x = templateT.xname.x
                         bottom_text.y = templateT.xname.y
+                        bottom_text.height = horizontallabelsize if horizontallabelsize is not None else bottom_text.height
                         bottom_text.string = [bottom_label]
                         templates.x.plot(bottom_text)
                 else:
@@ -647,6 +667,7 @@ class EzLinePlot(object):
                                                    To_source=templateT.xname.textorientation)
                         top_label.x = templateT.data.x2 + (templateT.data.x1 - templateT.yname.x)
                         top_label.y = templateT.yname.y2
+                        top_label.height = horizontallabelsize if horizontallabelsize is not None else top_label.height
                         top_label.string = [top_label]
                         templates.x.plot(top_label)
                 else:
@@ -704,7 +725,7 @@ class EzLinePlot(object):
                 titleObj = vcs.createtext()
                 titleObj.halign = "center"
                 titleObj.valign = "top"
-                titleObj.height = 20            
+                titleObj.height = titlesize if titlesize is not None else 30 
                 titleObj.string = title
                 titleObj.x = .5
                 titleObj.y = .95
@@ -715,4 +736,4 @@ class EzLinePlot(object):
             if titleObj is not None:
                 display = templates.x.plot(titleObj)
 
-        return templates.x
+        return display
