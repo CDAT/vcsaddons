@@ -1,0 +1,261 @@
+<h1><strong>EzPlot Library</strong></h1>
+<h2><strong>Introduction</strong></h2>
+<p>EzPlot Library is a library built to help users of UV-CDAT generating beautiful plots easily.</p>
+<p>EzPlot first sub-package: "EzLinePlot" is designed to create&nbsp;1D line plots.</p>
+<p><br />EzPlot is easy to use.&nbsp;<br />It consist in a 2 steps process</p>
+<ol>
+<li>Initialization of the object and setting up the values to use</li>
+<li>Method calling with chosen parameters&nbsp;</li>
+<li>Getting the vcs&nbsp;plot drawn on the VCS Canvas provided in the previous step</li>
+</ol>
+<h3>EzLinePlot</h3>
+<p>EzLinePlot creates 1D beautiful plots. It is capable of adjusting the axis data ranges in order to obtain consistent and beautiful plots.</p>
+<p>EzLinePlot is designed to be configurable. The parameters available for the user are:</p>
+<ul>
+<li>
+<p class="p1">data: List of variables to plot</p>
+</li>
+<li>
+<p class="p1">canvas: VCS canvas</p>
+</li>
+<li>
+<p class="p1">template: The template to use as the base for the plot.</p>
+</li>
+<li>
+<p class="p1">line: A line object or name of a line object used to describe the lines plotted. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">linetypes: List of VCS valid line types. Ex. solid, dash, etc. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">linewidths: List of line widths. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">linecolors: List of line colors. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">backgroundcolor: Canvas background color. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">colormap: A valid VCS colormap. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">randomcolor: Set the line colors in a random way.</p>
+</li>
+<li>
+<p class="p1">title: A VCS text type or a string text for the plot title. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">left_label: Text to put on the left Y axis.</p>
+</li>
+<li>
+<p class="p1">right_label: Text to put on the right Y axis.</p>
+</li>
+<li>
+<p class="p1">bottom_label: Text to put on the bottom.</p>
+</li>
+<li>
+<p class="p1">top_label: Text to put on the top.</p>
+</li>
+<li>
+<p class="p1">marker: A marker object or name of a marker object used to describe the markers plotted. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">markercolors: A list of valid VCS colors. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">markertypes: A list of valid VCS marker types. Ex: dot, None, etc. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">markersizes: A list of valid marker sizes. Ex: [4, 3, 1]. Set to None to hide.<span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span></p>
+</li>
+<li>
+<p class="p1">legendtexts: List of strings with for the legend texts. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">legendscratched:<span class="Apple-converted-space">&nbsp;</span></p>
+</li>
+<li>
+<p class="p1">legendtextcolors: List of valid VCS colors for the legend texts. Ex. ["black", "yellow"].</p>
+</li>
+<li>
+<p class="p1">legendposition: List of 4 values"[x1, x2, y1, y2]. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">legendstacking: Set to "horizontal" or "vertical"</p>
+</li>
+<li>
+<p class="p1">legenddrawbackground: Boolean enabling/disabling background rendering. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">legendbackgroundcolor: A valid VCS color for the legend box background. Set to None to hide.</p>
+</li>
+<li>
+<p class="p1">legendsmallestfontsize: Minimal value for the legend font size.</p>
+</li>
+<li>
+<p class="p1">tick_sides: A list of "left" or "right" values indicating which side of the chart you want the variable axes to be displayed.</p>
+</li>
+<li>
+<p class="p1">framewidth: The width of the frames lines.</p>
+</li>
+<li>
+<p class="p1">autoxaxis: Boolean enabling/disabling auto range for the X axis. Enabled by default.</p>
+</li>
+<li>
+<p class="p1">autoyaxis: Boolean enabling/disabling auto range for the Y axis. Enabled by default.</p>
+</li>
+<li>
+<p class="p1">min_y: If you want to adjust the y axis bounds, you can set a minimum value. Will be derived from data if not specified.</p>
+</li>
+<li>
+<p class="p1">max_y: If you want to adjust the y axis bounds, you can set a maximum value. Will be derived from data if not specified.</p>
+</li>
+<li>
+<p class="p1">min_x: If you want to adjust the x axis bounds, you can set a minimum value. Will be derived from data if not specified.</p>
+</li>
+<li>
+<p class="p1">max_x: If you want to adjust the x axis bounds, you can set a maximum value. Will be derived from data if not specified.</p>
+</li>
+<li>
+<p class="p1">x_labels: Dictionary for setting axis tick labels</p>
+</li>
+<li>
+<p class="p1">y_labels: Dictionary for setting axis tick labels</p>
+</li>
+<li>
+<p class="p1">enablegrid: Boolean enabling/disabling the grid rendering.</p>
+</li>
+</ul>
+<p>Besides all these variables, one can also set the default percentage of range increasing for the axis, the color of the grid and the base automatic colormap for the object:</p>
+<ul>
+<li>
+<p class="p1"><span class="s1">rangeincrease</span></p>
+</li>
+<li>
+<p class="p1"><span class="s1">defaultgridcolor</span></p>
+</li>
+<li>
+<p class="p1"><span class="s1">defaultlinecolors</span></p>
+</li>
+</ul>
+<h3><span class="s1">Examples</span></h3>
+<p><span class="s1">Simple line plot:</span></p>
+<pre>import os
+import vcs
+import cdms2
+import vcsaddons.EzPlot
+import cdutil
+
+# Simple Plot with EzPlot
+
+if __name__ == "__main__":
+    
+    variables = [[1, 2, 3, 4, 3, 2, 1]]
+
+    plotfunction = vcsaddons.EzPlot.EzLinePlot(defaultgridcolor=[(50, 50, 50, 50)])
+
+    canvas = vcs.init()
+
+    # Customize the lines used to draw the plots
+    line_type  = ["solid"]
+    line_widths = [8]
+
+    # Customize the markers drawn
+    marker_type = [None]
+
+    # Customize Legend Text
+    legend_texts = ["Test Line"]
+    legend_text_colors = ['black']
+
+    marker = vcs.createmarker()
+    marker.size = 6
+    marker.color = ["black", "black"]
+    marker.type = ["triangle_up", "triangle_down"]
+
+
+    plotfunction.lineplot(data=variables, canvas=canvas, title="Simple EzLinePlot",
+                            autoxaxis=True, autoyaxis=True,
+                            marker=marker, bottom_label="Non-dimensional values",
+                            legendtextcolors=legend_text_colors, legendtexts=legend_texts,
+                            enablegrid=True, legendbackgroundcolor="white")
+
+    canvas.png("EzPlot_Simple")
+</pre>
+<p>Result:</p>
+<p><img src="EzPlot_Simple.png" alt="" /></p>
+<p>Spaghetti example:</p>
+<pre>import os
+import vcs
+import cdms2
+import vcsaddons.EzPlot
+import cdutil
+
+# Classic Spaghetti Plot with EzPlot
+
+if __name__ == "__main__":
+    
+    # A quick example on how to use the above function
+    f = cdms2.open(os.path.join(vcs.sample_data, "tas_ccsr-95a.xml"))
+
+    variables = []
+    for i in range(6):
+        tas = f("tas", slice(i*12, (i+1)*12))  # Extract one year
+        # Assign an ID that will distinguish the years
+        tas.id = "tas_%i" % tas.getTime().asComponentTime()[0].year
+        # Manipulating the variable changes the id; we'll save it here.
+        saved_id = tas.id
+        # Make sure the data is bounded before averaging
+        cdutil.setTimeBoundsMonthly(tas)
+        var = cdutil.averager(tas(squeeze=1), axis="xy")
+        var = cdutil.ANNUALCYCLE.climatology(var)
+        var.id = saved_id
+        variables.append(var)
+
+    plotfunction = vcsaddons.EzPlot.EzLinePlot()
+
+    canvas = vcs.init()
+
+    # Customize the lines used to draw the plots
+    line_type  = ["solid", "solid", "solid", "long-dash", "solid", "solid"]
+    line_widths = [5, 5, 5, 5, 5, 5]
+
+    # Customize the markers drawn
+    marker_type = [None, None, None, None, None, None]
+
+    # Middle of the month (from the time axis)
+    months = {
+              15.5: "Jan",
+              45.0: "Feb",
+              74.5: "March",
+              105.0: "April",
+              135.5: "May",
+              166.0: "June",
+              196.5: "July",
+              227.5: "Aug",
+              258.0: "Sep",
+              288.5: "Oct",
+              319.0: "Nov",
+              349.5: "Dec"
+            }
+
+    # Legend Text
+    legend_text = ["tas_1979", "tas_1980", "tas_1981", "tas_1982", "tas_1983", "tas_1984"]
+    legend_text_color = ['black', 'black', 'black', 'black', 'black', 'black']
+    
+    plotfunction.lineplot(data=variables, canvas=canvas, line=None, linetypes=line_type,
+                            #colormap=vcs.matplotlib2vcs("jet"),
+                            #colormap=canvas.createcolormap('example', 'categorical'),
+                            #randomcolor=True,
+                            markertypes=marker_type, linewidths=line_widths,
+                            legendtexts=legend_text, legendtextcolors=legend_text_color, legendbackgroundcolor="white",
+                            left_label="Temperature (K)", x_labels=months, 
+                            title="Surface Temperature Averages",
+                            enablegrid=True)
+        
+    f.close()
+
+    canvas.png("EzPlot_Spaghetti")
+</pre>
+<p>&nbsp;Result:</p>
+<p><img src="EzPlot_Spaghetti.png" alt="" /></p>
