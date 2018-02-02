@@ -6,6 +6,7 @@ import cdms2
 import cdat_info
 import vcsaddons.EzPlot
 import cdutil
+import vcs
 
 class EzPlotTest(basetest.BaseTest):
     def testLinePlot(self):
