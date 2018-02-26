@@ -28,7 +28,7 @@ class EzPlotTest(basetest.BaseTest):
         legend_text_colors = ['black']
 
         marker = vcs.createmarker()
-        marker.size = 6
+        marker.size = 3
         marker.color = ["black", "black"]
         marker.type = ["triangle_up", "triangle_down"]
 
