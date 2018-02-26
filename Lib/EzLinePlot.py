@@ -1,5 +1,5 @@
 import vcs
-import EzTemplate
+from . import EzTemplateSrc as EzTemplate
 import random
 
 
