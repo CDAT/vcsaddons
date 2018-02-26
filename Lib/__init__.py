@@ -1,9 +1,12 @@
 from .core import gms
 from . import histograms
 from . import polar
-from . import EzTemplateSrc as EzTemplate  # noqa
+from . import EzTemplateSrc # noqa
 from . import yxvsxfill
 from . import parallelCoordinates
+
+
+EzTemplate = EzTemplateSrc
 
 
 def createyxvsxfill(name=None, source='default', x=None, template=None):
