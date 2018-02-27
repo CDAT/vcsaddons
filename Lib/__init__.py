@@ -1,7 +1,7 @@
 from .core import gms
 from . import histograms
 from . import polar
-from . import EzTemplate  # noqa
+from . import EzTemplateSrc as EzTemplate  # noqa
 from . import yxvsxfill
 from . import parallelCoordinates
 

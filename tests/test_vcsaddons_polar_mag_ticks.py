@@ -15,7 +15,7 @@ class VCSAddonTestPolar(basetest.BaseTest):
         mag = theta
         polar = vcsaddons.createpolar()
         polar.x = self.x
-        polar.markersizes = [8.]
+        polar.markersizes = [1.]
         polar.markercolors = ["red"]
         polar.markertypes = ["square"]
         polar.linepriority = 1

@@ -6,6 +6,7 @@ import cdms2
 import cdat_info
 import vcsaddons.EzPlot
 import cdutil
+import vcs
 
 class EzPlotTest(basetest.BaseTest):
     def testLinePlot(self):
@@ -27,7 +28,7 @@ class EzPlotTest(basetest.BaseTest):
         legend_text_colors = ['black']
 
         marker = vcs.createmarker()
-        marker.size = 6
+        marker.size = 3
         marker.color = ["black", "black"]
         marker.type = ["triangle_up", "triangle_down"]
 
