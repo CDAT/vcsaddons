@@ -1,4 +1,3 @@
 import vcsaddons
-import vcsaddons.EzTemplate
-from vcsaddons.EzTemplate import Multi
-from vcsaddons.EzTemplate import oneD
+from vcsaddons.EzTemplateSrc import Multi
+from vcsaddons.EzTemplateSrc import oneD
