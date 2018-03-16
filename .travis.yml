@@ -27,9 +27,9 @@ script:
 - python setup.py install
 - python run_tests.py -n2
 after_success:
-- if [ $TRAVIS_BRANCH != "master" -a $TRAVIS_PULL_REQUEST == "false" -a "$TRAVIS_OS_NAME" == "linux" ]; then docker run -v `pwd`:/travis_home
+- if [ $TRAVIS_BRANCH != "master" -a $TRAVIS_PULL_REQUEST == "false" -a "$TRAVIS_OS_NAME"
+  == "linux" ]; then docker run -v `pwd`:/travis_home
   -e CONDA_UPLOAD_TOKEN=${CONDA_UPLOAD_TOKEN}
   -e LABEL="testdocker"
   -e TRAVIS_BRANCH=${TRAVIS_BRANCH}
   -a STDOUT -a STDERR centos:6.8 /travis_home/ci-support/conda_upload.sh ; fi
-    - if [ "$TRAVIS_BRANCH" == "master" -a "$TRAVIS_PULL_REQUEST" == "false" ]; then conda install -n root conda-build anaconda-client && bash ci-support/conda_upload.sh ; fi
