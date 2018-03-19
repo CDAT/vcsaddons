@@ -7,11 +7,21 @@ echo "Trying to upload conda"
 if [ `uname` == "Linux" ]; then
     OS=linux-64
     echo "Linux OS"
+    yum install -y wget git gcc
+    wget --no-check https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh  -O miniconda2.sh 2> /dev/null
+    bash miniconda2.sh -b -p ${HOME}/miniconda2
     export PATH="$HOME/miniconda2/bin:$PATH"
+    echo $PATH
+    conda config --set always_yes yes --set changeps1 no
+    conda config --set anaconda_upload false --set ssl_verify false
+    conda install -n root -q anaconda-client conda-build
+    conda install -n root gcc future
     conda update -y -q conda
+    BRANCH=${TRAVIS_BRANCH}
 else
     echo "Mac OS"
     OS=osx-64
+    BRANCH=${CIRCLE_BRANCH}
 fi
 
 mkdir ~/conda-bld
