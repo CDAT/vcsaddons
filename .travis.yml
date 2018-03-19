@@ -29,7 +29,7 @@ script:
 - python setup.py install
 - python run_tests.py -v2 -n2
 after_success:
-- if [ $TRAVIS_BRANCH != "master" -a $TRAVIS_PULL_REQUEST == "false" -a "$TRAVIS_OS_NAME"
+- if [ $TRAVIS_BRANCH == "master" -a $TRAVIS_PULL_REQUEST == "false" -a "$TRAVIS_OS_NAME"
   == "linux" ]; then docker run -v `pwd`:/travis_home
   -e CONDA_UPLOAD_TOKEN=${CONDA_UPLOAD_TOKEN}
   -e LABEL="testdocker"
