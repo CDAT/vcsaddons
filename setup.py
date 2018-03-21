@@ -4,7 +4,7 @@ from distutils.core import setup, Extension
 src = ['Src/shpopen.c','Src/readshape.c','Src/dbfopen.c']
 
 setup (name = "vcsaddons",
-       version='0.9',
+       version='8.0',
        description = "addons for VCS",
        url = "http://cdat.sf.net",
        packages = ['vcsaddons','EzTemplate','EzPlot'],
