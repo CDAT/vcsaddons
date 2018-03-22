@@ -160,11 +160,16 @@ class Gpc(vcsaddons.core.VCSaddon):
         length = array.shape[-2]
 
         # Pad attributes related to Y axis
-        for att in ["datawc_y1", "datawc_y2",
-                    "yticlabels"]:
-            # prepare local lists
-            exec("%s = list(self.%s)" % (att, att))
-            exec("while len(%s) < length: %s+=[%s[-1]]" % (att, att, att))
+        loc = locals()
+        datawc_y1 = self.datawc_y1
+        while len(datawc_y1) < length:
+            datawc_y1 += [datawc_y1[-1]]
+        datawc_y2 = self.datawc_y2
+        while len(datawc_y2) < length:
+            datawc_y2 += [datawc_y2[-1]]
+        yticlabels = self.yticlabels
+        while len(yticlabels) < length:
+            yticlabels += [yticlabels[-1]]
 
         data = array.asma()
         maxs = numpy.ma.max(data, axis=-1)
@@ -271,11 +276,15 @@ class Gpc(vcsaddons.core.VCSaddon):
             lineAtts.append("markercolors")
         if self.linecolors is not None:
             lineAtts.append("linecolors")
+        global linetypes, linewidths, markertypes, markersizes
         for att in lineAtts:
             # prepare local lists
-            exec("%s = list(self.%s)" % (att, att))
-            exec("while len(%s) < nlines: %s+=[%s[-1]]" % (att, att, att))
-
+            exec("%s = list(self.%s)" % (att, att), globals(), locals())
+            exec("while len(%s) < nlines: %s+=[%s[-1]]" % (att, att, att), globals(), locals())
+        linetypes = locals()["linetypes"]
+        linewidths = locals()["linewidths"]
+        markersizes = locals()["markersizes"]
+        markertypes = locals()["markertypes"]
         if self.linecolors is None:
             linecolors = vcs.getcolors(list(range(nlines + 1)))
         if self.markercolors is None:
