@@ -274,8 +274,10 @@ class Gpc(vcsaddons.core.VCSaddon):
                     "markertypes", "markersizes"]
         if self.markercolors is not None:
             lineAtts.append("markercolors")
+            global markercolors
         if self.linecolors is not None:
             lineAtts.append("linecolors")
+            global linecolors
         global linetypes, linewidths, markertypes, markersizes
         for att in lineAtts:
             # prepare local lists
@@ -283,8 +285,12 @@ class Gpc(vcsaddons.core.VCSaddon):
             exec("while len(%s) < nlines: %s+=[%s[-1]]" % (att, att, att), globals(), locals())
         linetypes = locals()["linetypes"]
         linewidths = locals()["linewidths"]
+        if self.linecolors is not None:
+            linecolors = locals()["linecolors"]
         markersizes = locals()["markersizes"]
         markertypes = locals()["markertypes"]
+        if self.markercolors is not None:
+            markercolors = locals()["markercolors"]
         if self.linecolors is None:
             linecolors = vcs.getcolors(list(range(nlines + 1)))
         if self.markercolors is None:
