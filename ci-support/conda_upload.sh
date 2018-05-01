@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
 PKG_NAME=vcsaddons
 USER=cdat
-VERSION="2.12"
+VERSION="8.0"
 ESMF_CHANNEL="nesii/label/dev-esmf"
 echo "Trying to upload conda"
 if [ `uname` == "Linux" ]; then
@@ -22,6 +21,8 @@ else
     echo "Mac OS"
     OS=osx-64
     BRANCH=${CIRCLE_BRANCH}
+    WORKDIR=$1
+    export PATH=$WORKDIR/miniconda/bin:$PATH
 fi
 
 mkdir ~/conda-bld
@@ -34,4 +35,4 @@ cd conda-recipes
 python ./prep_for_build.py
 conda build $PKG_NAME -c cdat/label/nightly -c ${ESMF_CHANNEL} -c conda-forge -c uvcdat 
 conda build $PKG_NAME -c cdat/label/nightly -c ${ESMF_CHANNEL} -c conda-forge -c uvcdat --python=3.6
-anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l nightly $CONDA_BLD_PATH/$OS/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
+anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l

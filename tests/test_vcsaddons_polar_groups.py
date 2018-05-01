@@ -22,6 +22,6 @@ class VCSAddonTestPolar(basetest.BaseTest):
         r2 = numpy.array([mag, r_simple, r_simple_2])
         polar.markercolors = ["red", "green", "blue"]
         polar.markertypes = ["square", "dot", "diamond"]
-        polar.markersizes = [1., 5., 1.]
+        polar.markersizes = [1., 1., 1.]
         polar.plot(r2, theta)
         self.checkImage('test_vcsaddons_polar_groups.png')
