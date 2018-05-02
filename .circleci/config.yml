@@ -42,14 +42,17 @@ aliases:
        export UVCDAT_ANONYMOUS_LOG=False
        source activate py2
        python run_tests.py -v2 -n 2
-       RESULT=$?
-        echo "py2 test command exit result:",$RESULT
+       PY2_RESULT=$?
+       echo "*** py2 test result: "${PY2_RESULT}
        source activate py3
        python run_tests.py -n 2
-       RESULT=$(( $RESULT + $? ))
-       echo "test command exit result:",$RESULT
-       if [ $RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then conda install -n root conda-build anaconda-client ; fi
-       if [ $RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then bash ./ci-support/conda_upload.sh $WORKDIR; fi
+       PY3_RESULT=$?
+       echo "*** py3 test result: "${PY3_RESULT}
+       if [ $PY2_RESULT -eq 0 -a $PY3_RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then conda install -n root conda-build anaconda-client ; fi
+       if [ $PY2_RESULT -eq 0 -a $PY3_RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then bash ./ci-support/conda_upload.sh $WORKDIR; fi
+       if [ $PY2_RESULT	-ne 0 -o $PY3_RESULT -ne 0]; then
+         exit 1
+       fi
 
 jobs:
   macos_vcsaddons:
