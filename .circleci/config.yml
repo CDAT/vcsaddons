@@ -76,6 +76,7 @@ jobs:
       xcode: "9.2.0"
     environment:
       WORKDIR: "workspace/test_macos_vcsaddons"
+      OS: "osx-64"
     steps:
       - checkout
       - run: *setup_miniconda
