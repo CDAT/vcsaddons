@@ -11,8 +11,6 @@ aliases:
     command: |
       mkdir -p workspace
       git clone -b validateNightly git@github.com:CDAT/cdat workspace/cdat
-      ls workspace/cdat
-      # following will install miniconda3 under $WORKDIR/miniconda/bin
       python workspace/cdat/scripts/install_miniconda.py -w $WORKDIR -p 'py3'
       
   - &create_conda_env
@@ -41,15 +39,36 @@ aliases:
        export PATH=$WORKDIR/miniconda/bin:$PATH
        export UVCDAT_ANONYMOUS_LOG=False
        source activate py2
-       python run_tests.py -v2 -n 2
+       python run_tests.py -v2 -n 2 -H
        RESULT=$?
-        echo "py2 test command exit result:",$RESULT
+       echo "*** py2 test result: ",$RESULT
        source activate py3
-       python run_tests.py -n 2
-       RESULT=$(( $RESULT + $? ))
-       echo "test command exit result:",$RESULT
-       if [ $RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then conda install -n root conda-build anaconda-client ; fi
-       if [ $RESULT -eq 0 -a $CIRCLE_BRANCH == "master" ]; then bash ./ci-support/conda_upload.sh $WORKDIR; fi
+       python run_tests.py -n 2 -H
+       PY3_RESULT=$?
+       echo "*** py3 test result: "${PY3_RESULT}
+       RESULT=$(( $RESULT + $PY3_RESULT))
+       exit $RESULT
+
+  - &conda_upload
+    name: conda_upload
+    command: |
+       if [[ $CIRCLE_BRANCH != 'master' ]]; then
+          exit 0
+       fi
+       export PATH=${HOME}/project/$WORKDIR/miniconda/bin:$PATH
+       conda install conda-build anaconda-client
+       conda config --set anaconda_upload no
+       export CONDA_BLD_PATH=`pwd`/conda_build
+       git clone git://github.com/cdat/conda-recipes
+       cd conda-recipes
+       export PKG_NAME=vcsaddons
+       export USER=cdat
+       export VERSION=8.0
+       export LABEL=nightly
+       python ./prep_for_build.py -l $VERSION
+       conda build $PKG_NAME -c cdat/label/nightly -c conda-forge -c cdat 
+       conda build $PKG_NAME -c cdat/label/nightly -c conda-forge -c cdat --python=3.6
+       anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL $CONDA_BLD_PATH/$OS/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
 
 jobs:
   macos_vcsaddons:
@@ -63,6 +82,7 @@ jobs:
       - run: *create_conda_env
       - run: *setup_vcsaddons
       - run: *run_vcsaddons_tests
+      - run: *conda_upload
       - store_artifacts:
           path: tests_html
           destination: tests_html
@@ -70,11 +90,33 @@ jobs:
           path: tests_png
           destination: tests_png
 
+  linux_vcsaddons:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      WORKDIR: "workspace/test_linux_vcsaddons"
+      OS: "linux-64"
+    steps:
+      - checkout
+      - run: *setup_miniconda
+      - run: *create_conda_env
+      - run: *setup_vcsaddons
+      - run: *run_vcsaddons_tests
+      - run: *conda_upload
+      - store_artifacts:
+          path: tests_html
+          destination: tests_html
+      - store_artifacts:
+          path: tests_png
+          destination: tests_png
+
+
 workflows:
   version: 2
-  nightly:
-    jobs:
-      - macos_vcsaddons
+    vcsaddons:
+      jobs:
+        - macos_vcsaddons
+        - linux_vcsaddons
 
 
 
