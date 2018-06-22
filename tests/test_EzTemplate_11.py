@@ -34,6 +34,7 @@ class VCSAddonTest(basetest.BaseTest):
             y.setAxis(0, ax)
             yx = self.x.createyxvsx()
             yx.linecolor = 241 + i
+            yx.markersize = .5
             yx.datawc_y1 = -1.
             yx.datawc_y2 = 1.
             y.id = str(i)
