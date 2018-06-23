@@ -20,18 +20,18 @@ aliases:
        conda config --set always_yes yes --set changeps1 no
        conda update -y -q conda
        conda config --set anaconda_upload no
-       conda create -q -n py3 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 mesalib image-compare matplotlib numpy=1.14 vcs "proj4<5" "python>3"
-       conda create -q -n py2 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 mesalib image-compare matplotlib numpy=1.14 vcs "proj4<5" "python<3"
+       conda create -q -n py3 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 mesalib image-compare matplotlib numpy=1.14 vcs "proj4<5" "python>3" ${CONDA_COMPILERS}
+       conda create -q -n py2 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 mesalib image-compare matplotlib numpy=1.14 vcs "proj4<5" "python<3" ${CONDA_COMPILERS}
        
   - &setup_vcsaddons
     name: setup_vcsaddons
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        source activate py2
-       python setup.py install
+       env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
        source activate py3
        rm -rf build
-       python setup.py install
+       env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
 
   - &run_vcsaddons_tests
     name: run_vcsaddons_tests
@@ -66,7 +66,7 @@ aliases:
        export VERSION=8.0
        export LABEL=nightly
        python ./prep_for_build.py -l $VERSION
-       conda build $PKG_NAME -c cdat/label/nightly -c conda-forge -c cdat 
+       conda build $PKG_NAME -c cdat/label/nightly -c conda-forge -c cdat --python=2.7
        conda build $PKG_NAME -c cdat/label/nightly -c conda-forge -c cdat --python=3.6
        anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL $CONDA_BLD_PATH/$OS/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
 
@@ -77,6 +77,8 @@ jobs:
     environment:
       WORKDIR: "workspace/test_macos_vcsaddons"
       OS: "osx-64"
+      CONDA_COMPILERS: "clang_osx-64"
+      LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -97,6 +99,8 @@ jobs:
     environment:
       WORKDIR: "workspace/test_linux_vcsaddons"
       OS: "linux-64"
+      CONDA_COMPILERS: "gcc_linux-64"
+      LDSHARED_FLAGS: "-shared -pthread"
     steps:
       - checkout
       - run: *setup_miniconda
