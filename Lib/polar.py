@@ -180,7 +180,7 @@ class Gpo(vcsaddons.core.VCSaddon):
         super(Gpo, self).__init__(name, source, x, template)
         self.x = None
         if source == "default":
-            self.markersizes = [3]
+            self.markersizes = [1]
             self.markercolors = ["blue"]
             self.markertypes = ["dot"]
             self.markercolorsource = "group"

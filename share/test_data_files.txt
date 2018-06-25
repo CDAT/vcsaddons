@@ -1,2 +1,2 @@
-http://uvcdat.llnl.gov/cdat/sample_data
+https://cdat.llnl.gov/cdat/sample_data
 aa51aa896ead44019335cebec68e7955  clt.nc
