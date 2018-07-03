@@ -17,8 +17,8 @@ script:
 - export UVCDAT_SETUP_PATH=${HOME}
 - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export COMPILERS=gcc_linux-64; export LDSHARED_FLAGS="-shared -pthread" ; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export COMPILERS=clang_osx-64; export LDSHARED_FLAGS="-bundle -undefined dynamic_lookup" ; fi
-- conda create -q -n py2 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 matplotlib mesalib image-compare vcs "proj4<5" "python<3" ${COMPILERS}
-- conda create -q -n py3 -c cdat/label/nightly -c conda-forge -c cdat cdms2 nose flake8 matplotlib mesalib image-compare vcs "proj4<5" "python>3" ${COMPILERS}
+- conda create -q -n py2 -c cdat/label/nightly -c conda-forge -c cdat cdms2 testsrunner matplotlib mesalib image-compare vcs "proj4<5" "python<3" ${COMPILERS}
+- conda create -q -n py3 -c cdat/label/nightly -c conda-forge -c cdat cdms2 testsrunner matplotlib mesalib image-compare vcs "proj4<5" "python>3" ${COMPILERS}
 - echo $TRAVIS_BRANCH
 - export TRAVIS_PR_BRANCH=$TRAVIS_BRANCH
 - echo $TRAVIS_EVENT_TYPE
