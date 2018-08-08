@@ -54,8 +54,8 @@ class Spacing(object):
     vertical = property(_getvertical, _setvertical, None, "Vertical Spacing")
 
     def __str__(self):
-        st = 'horizontal = ' + str(self.horizontal)
-        st += '\nvertical = ' + str(self.vertical)
+        st = '\thorizontal = ' + str(self.horizontal)
+        st += '\n\tvertical = ' + str(self.vertical)
         return st
 
 
@@ -64,10 +64,10 @@ class Margins(object):
     __slots__ = ['_top', '_bottom', '_left', '_right']
 
     def __str__(self):
-        st = 'top = ' + str(self.top)
-        st += '\nbottom = ' + str(self.bottom)
-        st += '\nright = ' + str(self.right)
-        st += '\nleft = ' + str(self.left)
+        st = '\ttop = ' + str(self.top)
+        st += '\n\tbottom = ' + str(self.bottom)
+        st += '\n\tright = ' + str(self.right)
+        st += '\n\tleft = ' + str(self.left)
         return st
 
     def __init__(self, top, bottom, left, right):
@@ -160,10 +160,10 @@ class Legend(object):
     stretch = property(_getstretch, _setstretch, None, "Stretch")
 
     def __str__(self):
-        st = 'direction = ' + self.direction
-        st += '\nstretch = ' + str(self.stretch)
-        st += '\nthickness = ' + str(self.thickness)
-        st += '\nfat = ' + str(self.fat)
+        st = '\tdirection = ' + self.direction
+        st += '\n\tstretch = ' + str(self.stretch)
+        st += '\n\tthickness = ' + str(self.thickness)
+        st += '\n\tfat = ' + str(self.fat)
         return st
 
 
@@ -283,7 +283,7 @@ class Multi(object):
                  local means the legend is added inside the space reserved for this plot
                  global or None means the legend is to be used for all plots on the page
         font :   True/False scale the fonts from "original" template
-        fontlimit :   Will shrink the fonts by more than this value
+        fontlimit :   Will not shrink the fonts by more than this value (in %)
         """
         if self.rows > self.columns:
             if self.x.orientation() == 'landscape':
