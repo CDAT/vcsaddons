@@ -43,6 +43,8 @@ aliases:
        export PATH=$WORKDIR/miniconda/bin:$PATH
        export CDAT_ANONYMOUS_LOG=False
        source activate $PY_VER
+       mkdir tests_png
+       mkdir tests_html
        python run_tests.py -v2 -n 2 -H $COVERAGE
        RESULT=$?
        echo "*** $PY_VER test result: "$RESULT
@@ -61,7 +63,7 @@ aliases:
     environment:
        CHANNELS: "-c cdat/label/nightly -c conda-forge -c cdat"
     command: |
-       if [[ $CIRCLE_BRANCH != 'add_coverage' ]]; then
+       if [[ $CIRCLE_BRANCH != 'master' ]]; then
           exit 0
        fi
        export PATH=${HOME}/project/$WORKDIR/miniconda/bin:$PATH
@@ -73,8 +75,8 @@ aliases:
        export PKG_NAME=vcsaddons
        export USER=cdat
        export VERSION=8.0
-       export LABEL=linatest
-       python ./prep_for_build.py -l $VERSION -b 'add_coverage'
+       export LABEL=nightly
+       python ./prep_for_build.py -l $VERSION
        if [[ $PY_VER = 'py2' ]]; then
           conda build $PKG_NAME $CHANNELS --python=2.7
        else
