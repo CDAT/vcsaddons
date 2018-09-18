@@ -26,7 +26,7 @@ aliases:
        if [[ $PY_VER = "py2" ]]; then
           conda create -q -n $PY_VER $CHANNELS $PKGS "python>3" $FFMPEG ${CONDA_COMPILERS}
        else
-          conda create -q -n $PY_VER $CHANNELS $PKGS "python<3" $FFMPEG ${CONDA_COMPILERS}
+          conda create -q -n $PY_VER $CHANNELS $PKGS "python<3" $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
        fi
     
   - &setup_vcsaddons
@@ -166,6 +166,7 @@ jobs:
       PY_VER: "py3"
       FFMPEG: "ffmpeg"
       COVERAGE: "-c tests/coverage.json"
+      COVERAGE_PKGS: "coverage coveralls"
     steps:
       - checkout
       - run: *setup_miniconda
