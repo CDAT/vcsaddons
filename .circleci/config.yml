@@ -43,10 +43,18 @@ aliases:
        export PATH=$WORKDIR/miniconda/bin:$PATH
        export CDAT_ANONYMOUS_LOG=False
        source activate $PY_VER
-       python run_tests.py -v2 -n 2 -H
+       python run_tests.py -v2 -n 2 -H $COVERAGE
        RESULT=$?
        echo "*** $PY_VER test result: "$RESULT
        exit $RESULT
+
+  - &run_coveralls
+    name: run_coveralls
+    command: |
+       export PATH=$WORKDIR/miniconda/bin:$PATH
+       source activate $PY_VER
+       coveralls
+       source deactivate
 
   - &conda_upload
     name: conda_upload
@@ -157,12 +165,14 @@ jobs:
       LDSHARED_FLAGS: "-shared -pthread"
       PY_VER: "py3"
       FFMPEG: "ffmpeg"
+      COVERAGE: "-c tests/coverage.json"
     steps:
       - checkout
       - run: *setup_miniconda
       - run: *create_conda_env
       - run: *setup_vcsaddons
       - run: *run_vcsaddons_tests
+      - run: *run_coveralls
       - run: *conda_upload
       - store_artifacts:
           path: tests_html
