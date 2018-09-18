@@ -1,0 +1,4 @@
+{
+   "include": ["vcsaddons", "cdat_info", "cdms2", "cdutil", "vcs"]
+}
+
