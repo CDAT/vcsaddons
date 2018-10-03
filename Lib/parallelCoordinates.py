@@ -50,7 +50,6 @@ class Gpc(vcsaddons.core.VCSaddon):
         print('datawc_y2 = ', self.datawc_y2)
         print('xmtics1 = ', self.xmtics1)
         print('xmtics2 = ', self.xmtics2)
-        print('ymtics = ', self.ymtics)
         print('xticlabels1 = ', self.xticlabels1)
         print('xticlabels2 = ', self.xticlabels2)
         print('yticlabels = ', self.yticlabels)
@@ -304,6 +303,12 @@ class Gpc(vcsaddons.core.VCSaddon):
             else:
                 scratched.append(True)
         # Now draws the legend
+        linecolors = linecolors[:nlines]
+        linetypes = linetypes[:nlines]
+        linewidths = linewidths[:nlines]
+        markercolors = markercolors[:nlines]
+        markersizes = markersizes[:nlines]
+        markertypes = markertypes[:nlines]
         t.drawLinesAndMarkersLegend(x,
                                     linecolors, linetypes, linewidths,  # noqa
                                     markercolors, markertypes, markersizes,  # noqa
