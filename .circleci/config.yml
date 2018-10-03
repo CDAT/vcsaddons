@@ -17,16 +17,16 @@ aliases:
     name: create_conda_env
     environment:
        PKGS: "cdms2 mesalib matplotlib 'numpy>1.14' vcs 'proj4<5' testsrunner"
-       CHANNELS: "-c cdat/label/nightly -c conda-forge -c cdat"
+       CHANNELS: "-c cdat/label/nightly -c conda-forge/label/gcc7 -c conda-forge -c cdat"
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        conda config --set always_yes yes --set changeps1 no
        conda update -y -q conda
        conda config --set anaconda_upload no
        if [[ $PY_VER = "py2" ]]; then
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>3' $FFMPEG ${CONDA_COMPILERS}
+          conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS}
        else
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
+          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>3' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
        fi
     
   - &setup_vcsaddons
