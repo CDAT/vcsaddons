@@ -17,7 +17,7 @@ aliases:
     name: create_conda_env
     environment:
        PKGS: "cdms2 mesalib matplotlib 'numpy>1.14' vcs 'proj4<5' testsrunner"
-       CHANNELS: "-c cdat/label/nightly -c conda-forge/label/gcc7 -c conda-forge -c cdat"
+       CHANNELS: "-c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat"
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        conda config --set always_yes yes --set changeps1 no
