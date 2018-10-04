@@ -61,7 +61,7 @@ aliases:
   - &conda_upload
     name: conda_upload
     environment:
-       CHANNELS: "-c cdat/label/nightly -c conda-forge -c cdat"
+       CHANNELS: "-c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat"
     command: |
        if [[ $CIRCLE_BRANCH != 'master' ]]; then
           exit 0
