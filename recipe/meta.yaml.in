@@ -1,0 +1,29 @@
+package:
+    name: vcsaddons
+    version: "@VERSION@"
+
+source:
+    git_rev: @UVCDAT_BRANCH@
+    git_url: git://github.com/cdat/vcsaddons.git
+
+build:
+  number: @BUILD_NUMBER@
+ 
+requirements:
+  build:
+    - {{ compiler("c") }}
+  host:
+    - python
+    - setuptools
+  run:
+    - python
+    - vcs
+    - cdms2
+    - libgcc
+
+about:
+    home:  http://github.com/cdat/vcsaddons
+    summary: Addons to VCS.
+    license: BSD
+    license_file: bsd-3-clause.txt
+
