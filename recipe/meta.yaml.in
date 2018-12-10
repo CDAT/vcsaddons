@@ -8,7 +8,7 @@ source:
 
 build:
   number: @BUILD_NUMBER@
-  script: python setup.py install
+  script: LDSHARED="${CC} ${LDSHARED" python setup.py install
  
 requirements:
   build:
