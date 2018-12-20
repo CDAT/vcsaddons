@@ -34,6 +34,7 @@ aliases:
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        source activate $PY_VER
+       if [[ -e $GCC} ]]; then export CC=${GCC}; fi
        env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
        rm -rf build
 
