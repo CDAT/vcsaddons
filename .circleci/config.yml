@@ -34,7 +34,12 @@ aliases:
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        source activate $PY_VER
-       env CC=${GCC} LDSHARED="${GCC} ${LDSHARED_FLAGS}" python setup.py install
+       env
+       if [[ -e $CC ]]; then
+        env CC=${GCC} LDSHARED="${GCC} ${LDSHARED_FLAGS}" python setup.py install
+       else
+        env CC=${CC} LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
+       fi
        rm -rf build
 
   - &run_vcsaddons_tests
