@@ -24,11 +24,13 @@ script:
 - echo $TRAVIS_EVENT_TYPE
 - echo $TRAVIS_PULL_REQUEST
 - source activate py2
-- env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
+- if [[ -e ${GCC} ]]; then env CC=${GCC} LDSHARED="${GCC} ${LDSHARED_FLAGS}" python setup.py install ; fi
+- if [[ ! -e ${GCC} ]]; then env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install ; fi
 - python run_tests.py -v2 -n2
 - source activate py3
 - rm -rf build
-- env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
+- if [[ -e ${GCC} ]]; then env CC=${GCC} LDSHARED="${GCC} ${LDSHARED_FLAGS}" python setup.py install ; fi
+- if [[ ! -e ${GCC} ]]; then env LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install ; fi
 - python run_tests.py -v2 -n2
 after_success:
 - if [ $TRAVIS_BRANCH == "master" -a $TRAVIS_PULL_REQUEST == "false" -a "$TRAVIS_OS_NAME"
