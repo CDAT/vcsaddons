@@ -44,8 +44,6 @@ class Gpc(vcsaddons.core.VCSaddon):
     def list(self):
         print('graphics method = ', self.g_name)
         print('name = ', self.name)
-        print('datawc_x1 = ', self.datawc_x1)
-        print('datawc_x2 = ', self.datawc_x2)
         print('datawc_y1 = ', self.datawc_y1)
         print('datawc_y2 = ', self.datawc_y2)
         print('xmtics1 = ', self.xmtics1)
@@ -185,6 +183,8 @@ class Gpc(vcsaddons.core.VCSaddon):
             if numpy.allclose(datawc_y1[i], 1.e20):  # noqa
                 datawc_y1[i] = levels[0]  # noqa
                 datawc_y2[i] = levels[-1]  # noqa
+            else:  # Ok user wants specific range, use this please
+                levels = vcs.mkscale(datawc_y1[i], datawc_y2[i])
             maxs[i] = datawc_y2[i]  # noqa
             mins[i] = datawc_y1[i]  # noqa
 
