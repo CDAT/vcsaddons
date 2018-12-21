@@ -671,7 +671,7 @@ def init_polar():
         dash = vcs.createline()
         dash.type = "dash"
         dot = vcs.createline()
-        dot.type = "dot"
+        dot.type = "sparse-dot"
         t.xtic1.line = dash
         t.ytic1.line = dot
 
