@@ -19,14 +19,14 @@ class VCSAddonTestPolar(basetest.BaseTest):
         polar.markercolors = ["red"]
         polar.markertypes = ["square"]
         polar.linepriority = 1
-        polar.linetypes = ["dot"]
+        polar.linetypes = ["sparse-dot"]
         polar.linecolors = ["blue"]
         polar.linewidths = [2.]
         polar.datawc_y1 = 0
         polar.datawc_y2 = 7
         tmpl = self.x.createtemplate()
         dot = self.x.createline()
-        dot.type = "dot"
+        dot.type = "sparse-dot"
         dot.color = ["grey"]
         tmpl.ymintic1.line = dot
         tmpl.ymintic1.priority = 1
