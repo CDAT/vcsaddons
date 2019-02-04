@@ -104,7 +104,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py2"
-      FFMPEG: "'ffmpeg>4' 'libpng>1.6.34'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng>1.6.34'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -128,7 +128,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py3"
-      FFMPEG: "'ffmpeg>4' 'libpng>1.6.34'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng>1.6.34'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -152,7 +152,7 @@ jobs:
       CONDA_COMPILERS: "gcc_linux-64"
       LDSHARED_FLAGS: "-shared -pthread"
       PY_VER: "py2"
-      FFMPEG: "ffmpeg"
+      FFMPEG: "'ffmpeg>4.0.1'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -176,7 +176,7 @@ jobs:
       CONDA_COMPILERS: "gcc_linux-64"
       LDSHARED_FLAGS: "-shared -pthread"
       PY_VER: "py3"
-      FFMPEG: "ffmpeg"
+      FFMPEG: "'ffmpeg>4.0.1'"
       COVERAGE: "-c tests/coverage.json --coverage-from-egg"
       COVERAGE_PKGS: "coverage coveralls"
     steps:
