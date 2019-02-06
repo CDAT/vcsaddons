@@ -104,7 +104,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py2"
-      FFMPEG: "'ffmpeg>=4.1'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng=1.6.36' 'libdrs>3.1.0.2018.12.19' 'libdrs_f>3.1.0.2018.12.19'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -128,7 +128,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py3"
-      FFMPEG: "'ffmpeg>=4.1'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng=1.6.36' 'libdrs>3.1.0.2018.12.19' 'libdrs_f>3.1.0.2018.12.19'"
     steps:
       - checkout
       - run: *setup_miniconda
