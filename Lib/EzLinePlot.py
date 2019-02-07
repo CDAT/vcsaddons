@@ -529,7 +529,7 @@ class EzLinePlot(object):
             legcolors = legendtextcolors
 
         # Set the default font for the legend's texts
-        if templates.x.getfontname(1) is not "DejaVuSans":
+        if templates.x.getfontname(1) != "DejaVuSans":
             try:
                 templates.x.switchfonts("default", "DejaVuSans")
             except vcs.error.vcsError:

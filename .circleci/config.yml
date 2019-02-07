@@ -23,6 +23,7 @@ aliases:
        conda config --set always_yes yes --set changeps1 no
        conda update -y -q conda
        conda config --set anaconda_upload no
+       conda install -f "conda<4.6"
        if [[ $PY_VER = "py2" ]]; then
           conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS}
        else
@@ -103,7 +104,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py2"
-      FFMPEG: "'ffmpeg>4' 'libpng>1.6.34'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng>=1.6.36'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -127,7 +128,7 @@ jobs:
       CONDA_COMPILERS: "clang_osx-64"
       LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
       PY_VER: "py3"
-      FFMPEG: "'ffmpeg>4' 'libpng>1.6.34'"
+      FFMPEG: "'ffmpeg>=4.1' 'libpng>=1.6.36'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -151,7 +152,7 @@ jobs:
       CONDA_COMPILERS: "gcc_linux-64"
       LDSHARED_FLAGS: "-shared -pthread"
       PY_VER: "py2"
-      FFMPEG: "ffmpeg"
+      FFMPEG: "'ffmpeg>4.0.1'"
     steps:
       - checkout
       - run: *setup_miniconda
@@ -175,7 +176,7 @@ jobs:
       CONDA_COMPILERS: "gcc_linux-64"
       LDSHARED_FLAGS: "-shared -pthread"
       PY_VER: "py3"
-      FFMPEG: "ffmpeg"
+      FFMPEG: "'ffmpeg>4.0.1'"
       COVERAGE: "-c tests/coverage.json --coverage-from-egg"
       COVERAGE_PKGS: "coverage coveralls"
     steps:
