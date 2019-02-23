@@ -91,6 +91,7 @@ aliases:
           conda build $PKG_NAME $CHANNELS --python=2.7
        else
           conda build $PKG_NAME $CHANNELS --python=3.6
+          conda build $PKG_NAME $CHANNELS --python=3.7
        fi
        anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL $CONDA_BLD_PATH/$OS/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
 
