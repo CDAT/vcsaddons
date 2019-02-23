@@ -19,6 +19,7 @@ requirements:
     - python
     - vcs
     - cdms2
+    - libcdms >=3.1.2
     - libgcc
 
 about:
