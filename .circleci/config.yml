@@ -16,7 +16,7 @@ aliases:
   - &create_conda_env
     name: create_conda_env
     environment:
-       PKGS: "cdms2 'libcdms>=3.1.2' mesalib matplotlib 'numpy>1.14' vcs 'proj4<5' testsrunner 'vtk-cdat>8.1'"
+       PKGS: "cdms2 'libcdms>=3.1.2' mesalib matplotlib 'numpy>1.14' vcs 'proj4<5' testsrunner vtk-cdat"
        CHANNELS: "-c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat"
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
@@ -26,7 +26,7 @@ aliases:
        if [[ $PY_VER = "py2" ]]; then
           conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS}
        else
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>3' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
+          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>=3.7' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
        fi
     
   - &setup_vcsaddons
