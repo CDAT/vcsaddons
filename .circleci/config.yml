@@ -26,7 +26,7 @@ aliases:
        if [[ $PY_VER = "py2" ]]; then
           conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS}
        else
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>=3.7' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
+          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>=3.6' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
        fi
     
   - &setup_vcsaddons
