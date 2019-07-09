@@ -16,8 +16,8 @@ aliases:
   - &create_conda_env
     name: create_conda_env
     environment:
-       PKGS: "cdms2 'libcdms>=3.1.2' mesalib matplotlib numpy vcs 'proj4<5' testsrunner vtk-cdat"
-       CHANNELS: "-c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat"
+       PKGS: "cdms2 mesalib matplotlib numpy vcs 'proj4<5' testsrunner vtk-cdat"
+       CHANNELS: "-c cdat/label/nightly -c conda-forge"
     command: |
        export PATH=$WORKDIR/miniconda/bin:$PATH
        conda config --set always_yes yes --set changeps1 no
@@ -66,7 +66,7 @@ aliases:
   - &conda_upload
     name: conda_upload
     environment:
-       CHANNELS: "-c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat"
+       CHANNELS: "-c cdat/label/nightly -c conda-forge"
     command: |
        if [[ $CIRCLE_BRANCH != 'master' ]]; then
           exit 0
@@ -199,17 +199,11 @@ workflows:
   version: 2
   vcsaddons:
     jobs:
-      - macos_vcsaddons_py2
       - macos_vcsaddons_py3:
            requires:
-              - macos_vcsaddons_py2
+              - linux_vcsaddons_py3
       - linux_vcsaddons_py2
       - linux_vcsaddons_py3:
            requires:
               - linux_vcsaddons_py2
-
-
-
-
-
 

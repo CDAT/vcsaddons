@@ -12,14 +12,13 @@ before_install:
 - bash miniconda.sh -b -p $HOME/miniconda
 - conda config --set always_yes yes --set changeps1 no
 - conda update -y -q conda
-- conda install -f "conda<4.6"
 script:
 - export UVCDAT_ANONYMOUS_LOG=False
 - export UVCDAT_SETUP_PATH=${HOME}
 - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export COMPILERS=gcc_linux-64; export LDSHARED_FLAGS="-shared -pthread" ; export FFMPEG="'ffmpeg>4.0.1'" ; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then export COMPILERS=clang_osx-64; export LDSHARED_FLAGS="-bundle -undefined dynamic_lookup" ; export FFMPEG="'ffmpeg>=4.1'" ; fi
-- conda create -q -n py2 -c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat cdms2 'libcdms>=3.1.2' testsrunner matplotlib mesalib vcs $FFMPEG "proj4<5" "python<3" ${COMPILERS}
-- conda create -q -n py3 -c cdat/label/nightly -c cdat-forge -c conda-forge -c cdat cdms2 'libcdms>=3.1.2' testsrunner matplotlib mesalib vcs $FFMPEG "proj4<5" "python=3.6" ${COMPILERS}
+- conda create -q -n py2 -c cdat/label/nightly -c conda-forge cdms2 testsrunner matplotlib mesalib vcs $FFMPEG "proj4<5" "python<3" ${COMPILERS}
+- conda create -q -n py3 -c cdat/label/nightly -c conda-forge cdms2 testsrunner matplotlib mesalib vcs $FFMPEG "proj4<5" "python=3.6" ${COMPILERS}
 - echo $TRAVIS_BRANCH
 - export TRAVIS_PR_BRANCH=$TRAVIS_BRANCH
 - echo $TRAVIS_EVENT_TYPE
