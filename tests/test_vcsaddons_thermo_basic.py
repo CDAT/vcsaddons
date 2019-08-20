@@ -1,9 +1,10 @@
 # Adapted for numpy/ma/cdms2 by convertcdms.py
-import thermo,vcs,cdms2
+import vcsaddons.thermo as thermo
+import vcs,cdms2
 import os,sys
 import basetest
 
-class ThermoTest(basetest.BaseGraphicsTest):
+class ThermoTest(basetest.BaseTest):
     def testBasic(self):
         th=thermo.Gth(x=self.x,name='test')
 

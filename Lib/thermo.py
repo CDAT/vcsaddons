@@ -214,7 +214,8 @@ def LiftWet(To, Po, Pend, deltaP=1000., method=None):
     temp = [To, ]
     pres = [Po, ]
     while (pres[-1] - deltaP >= Pend):
-        tmp = temp[-1] - deltaP * gammaw(temp[-1], 100, pres[-1] - deltaP / 2, method=method)
+        tmp = temp[-1] - deltaP * \
+            gammaw(temp[-1], 100, pres[-1] - deltaP / 2, method=method)
         temp.append(tmp)
         pres.append(pres[-1] - deltaP)
     return MV2.array(temp, id='T'), MV2.array(pres, id='P')
@@ -257,7 +258,7 @@ class Gth(object):
         try:
             x = float(x)
             y = float(y)
-        except:
+        except Exception:
             pass
         return x, y
 
@@ -266,7 +267,7 @@ class Gth(object):
         try:
             t = float(t)
             p = float(p)
-        except:
+        except Exception:
             pass
         return t, p
 
@@ -288,7 +289,8 @@ class Gth(object):
             # user defined diagram
             pass
         else:
-            raise ValueError('Error type: ' + repr(self.type) + ' is not a valid diagram type')
+            raise ValueError('Error type: ' + repr(self.type) +
+                             ' is not a valid diagram type')
 
         # Gets the xs for each corner
         dwx1 = self.datawc_x1 + 273.16
@@ -494,11 +496,13 @@ class Gth(object):
     def _setskewness(self, value):
         VCS_validation_functions.checkName(self, 'skewness', value)
         if self.type[:2] != 'sk':
-            raise ValueError('skewness can only be set for skewT type diagrams')
+            raise ValueError(
+                'skewness can only be set for skewT type diagrams')
         value = VCS_validation_functions.checkIntFloat(self, 'skewness', value)
         self._skewness = value
         self.setdiagramdefs()
-    skewness = property(_getskewness, _setskewness, None, 'Skewness of skewT diagram')
+    skewness = property(_getskewness, _setskewness, None,
+                        'Skewness of skewT diagram')
 
     def _getwindbarbsscales(self):
         return self._windbarbsscales
@@ -514,7 +518,8 @@ class Gth(object):
         return self._drawpseudoadiabats
 
     def _setdrawpseudoadiabats(self, value):
-        value = VCS_validation_functions.checkOnOff(self, 'drawpseudoadiabats', value)
+        value = VCS_validation_functions.checkOnOff(
+            self, 'drawpseudoadiabats', value)
         self._drawpseudoadiabats = value
     drawpseudoadiabats = property(_getdrawpseudoadiabats, _setdrawpseudoadiabats, None,
                                   'Draw the pseudo-adiabats ? (1/0) or (y/n)\nAlso called moist-adiabats')
@@ -523,7 +528,8 @@ class Gth(object):
         return self._drawmixingratio
 
     def _setdrawmixingratio(self, value):
-        value = VCS_validation_functions.checkOnOff(self, 'drawmixingratio', value)
+        value = VCS_validation_functions.checkOnOff(
+            self, 'drawmixingratio', value)
         self._drawmixingratio = value
     drawmixingratio = property(_getdrawmixingratio, _setdrawmixingratio, None,
                                'Draw the pseudo-adiabats ? (1/0) or (y/n)\nAlso called moist-adiabats')
@@ -532,9 +538,11 @@ class Gth(object):
         return self._drawdryadiabats
 
     def _setdrawdryadiabats(self, value):
-        value = VCS_validation_functions.checkOnOff(self, 'drawdryadiabats', value)
+        value = VCS_validation_functions.checkOnOff(
+            self, 'drawdryadiabats', value)
         self._drawdryadiabats = value
-    drawdryadiabats = property(_getdrawdryadiabats, _setdrawdryadiabats, None, 'Draw the dryadiabats ? (1/0) or (y/n)')
+    drawdryadiabats = property(
+        _getdrawdryadiabats, _setdrawdryadiabats, None, 'Draw the dryadiabats ? (1/0) or (y/n)')
 
     def _getdrawisobars(self):
         return self._drawisobars
@@ -542,13 +550,15 @@ class Gth(object):
     def _setdrawisobars(self, value):
         value = VCS_validation_functions.checkOnOff(self, 'drawisobars', value)
         self._drawisobars = value
-    drawisobars = property(_getdrawisobars, _setdrawisobars, None, 'Draw the isobars ? (1/0) or (y/n)')
+    drawisobars = property(_getdrawisobars, _setdrawisobars,
+                           None, 'Draw the isobars ? (1/0) or (y/n)')
 
     def _getdrawisothermsfilled(self):
         return self._drawisothermsfilled
 
     def _setdrawisothermsfilled(self, value):
-        value = VCS_validation_functions.checkOnOff(self, 'drawisothermsfilled', value)
+        value = VCS_validation_functions.checkOnOff(
+            self, 'drawisothermsfilled', value)
         self._drawisothermsfilled = value
     drawisothermsfilled = property(_getdrawisothermsfilled, _setdrawisothermsfilled,
                                    None, 'Draw the isothermsfilled ? (1/0) or (y/n)')
@@ -557,9 +567,11 @@ class Gth(object):
         return self._drawisotherms
 
     def _setdrawisotherms(self, value):
-        value = VCS_validation_functions.checkOnOff(self, 'drawisotherms', value)
+        value = VCS_validation_functions.checkOnOff(
+            self, 'drawisotherms', value)
         self._drawisotherms = value
-    drawisotherms = property(_getdrawisotherms, _setdrawisotherms, None, 'Draw the isotherms ? (1/0) or (y/n)')
+    drawisotherms = property(
+        _getdrawisotherms, _setdrawisotherms, None, 'Draw the isotherms ? (1/0) or (y/n)')
 
     def _getline(self):
         return self._line
@@ -630,7 +642,8 @@ class Gth(object):
         return self._dryadiabats
 
     def _setdryadiabats(self, value):
-        value = VCS_validation_functions.checkIsoline(self, 'dryadiabats', value)
+        value = VCS_validation_functions.checkIsoline(
+            self, 'dryadiabats', value)
         self._dryadiabats = value
     dryadiabats = property(
         _getdryadiabats,
@@ -642,7 +655,8 @@ class Gth(object):
         return self._pseudoadiabats
 
     def _setpseudoadiabats(self, value):
-        value = VCS_validation_functions.checkIsoline(self, 'pseudoadiabats', value)
+        value = VCS_validation_functions.checkIsoline(
+            self, 'pseudoadiabats', value)
         self._pseudoadiabats = value
     pseudoadiabats = property(
         _getpseudoadiabats,
@@ -654,7 +668,8 @@ class Gth(object):
         return self._mixingratio
 
     def _setmixingratio(self, value):
-        value = VCS_validation_functions.checkIsoline(self, 'mixingratio', value)
+        value = VCS_validation_functions.checkIsoline(
+            self, 'mixingratio', value)
         self._mixingratio = value
     mixingratio = property(
         _getmixingratio,
@@ -678,7 +693,8 @@ class Gth(object):
         return self._isothermsfilled
 
     def _setisothermsfilled(self, value):
-        value = VCS_validation_functions.checkIsofill(self, 'isothermsfilled', value)
+        value = VCS_validation_functions.checkIsofill(
+            self, 'isothermsfilled', value)
         self._isothermsfilled = value
     isothermsfilled = property(
         _getisothermsfilled,
@@ -702,7 +718,8 @@ class Gth(object):
         return self._Pmaxmixingratio
 
     def _setPmaxmixingratio(self, value):
-        value = VCS_validation_functions.checkIntFloat(self, 'Pmaxmixingratio', value)
+        value = VCS_validation_functions.checkIntFloat(
+            self, 'Pmaxmixingratio', value)
         self._Pmaxmixingratio = value
     Pmaxmixingratio = property(_getPmaxmixingratio, _setPmaxmixingratio, None,
                                'Pressure after which mixing ratio and pseudoadiats curves are not drawn anymore (hPa)')
@@ -728,7 +745,8 @@ class Gth(object):
             raise ValueError('Type should be a string')
         value = value.lower()
         if not value[:2] in ['sk', 'te', 'st', 'cu', 'em']:
-            raise ValueError('Error Thermodynamic Diagram type must skewT, Tephigram, Emmagram, Stuve or Custom')
+            raise ValueError(
+                'Error Thermodynamic Diagram type must skewT, Tephigram, Emmagram, Stuve or Custom')
         self._type = value
         self.setdiagramdefs()
     type = property(
@@ -749,37 +767,45 @@ class Gth(object):
         return self._datawc_x1
 
     def _setdatawc_x1(self, value):
-        value = VCS_validation_functions.checkIntFloat(self, 'datawc_x1', value)
+        value = VCS_validation_functions.checkIntFloat(
+            self, 'datawc_x1', value)
         self._datawc_x1 = value
         self.setdiagramdefs()
-    datawc_x1 = property(_getdatawc_x1, _setdatawc_x1, None, 'Temperature of lower left corner (in C)')
+    datawc_x1 = property(_getdatawc_x1, _setdatawc_x1, None,
+                         'Temperature of lower left corner (in C)')
 
     def _getdatawc_x2(self):
         return self._datawc_x2
 
     def _setdatawc_x2(self, value):
-        value = VCS_validation_functions.checkIntFloat(self, 'datawc_x2', value)
+        value = VCS_validation_functions.checkIntFloat(
+            self, 'datawc_x2', value)
         self._datawc_x2 = value
         self.setdiagramdefs()
-    datawc_x2 = property(_getdatawc_x2, _setdatawc_x2, None, 'Temperature of lower right corner (in C)')
+    datawc_x2 = property(_getdatawc_x2, _setdatawc_x2, None,
+                         'Temperature of lower right corner (in C)')
 
     def _getdatawc_y1(self):
         return self._datawc_y1
 
     def _setdatawc_y1(self, value):
-        value = VCS_validation_functions.checkIntFloat(self, 'datawc_y1', value)
+        value = VCS_validation_functions.checkIntFloat(
+            self, 'datawc_y1', value)
         self._datawc_y1 = value
         self.setdiagramdefs()
-    datawc_y1 = property(_getdatawc_y1, _setdatawc_y1, None, 'Minimum Pressure (in hPa)')
+    datawc_y1 = property(_getdatawc_y1, _setdatawc_y1,
+                         None, 'Minimum Pressure (in hPa)')
 
     def _getdatawc_y2(self):
         return self._datawc_y2
 
     def _setdatawc_y2(self, value):
-        value = VCS_validation_functions.checkIntFloat(self, 'datawc_y2', value)
+        value = VCS_validation_functions.checkIntFloat(
+            self, 'datawc_y2', value)
         self._datawc_y2 = value
         self.setdiagramdefs()
-    datawc_y2 = property(_getdatawc_y2, _setdatawc_y2, None, 'Maximum Pressure (in hPa)')
+    datawc_y2 = property(_getdatawc_y2, _setdatawc_y2,
+                         None, 'Maximum Pressure (in hPa)')
 
     def _getdisplays(self):
         return self._displays
@@ -812,7 +838,8 @@ class Gth(object):
             l = levels[il]
             tmpxs = []
             tmpys = []
-            t, p = LiftWet(l + 273.15, self.datawc_y1 * 100., self.Pmaxmixingratio * 100., 25000. / self.detail)
+            t, p = LiftWet(l + 273.15, self.datawc_y1 * 100.,
+                           self.Pmaxmixingratio * 100., 25000. / self.detail)
             nt = len(t)
             if il % 3 == 0:
                 crit1 = .05
@@ -834,14 +861,16 @@ class Gth(object):
             xs.append(tmpxs)
             ys.append(tmpys)
         l = self.x.createline()
-        l.color = [self.pseudoadiabats.linecolors[0],]
-        l.viewport = [template.data.x1, template.data.x2, template.data.y1, template.data.y2]
+        l.color = [self.pseudoadiabats.linecolors[0], ]
+        l.viewport = [template.data.x1, template.data.x2,
+                      template.data.y1, template.data.y2]
         l.worldcoordinate = [self.xmin, self.xmax, self.ymin, self.ymax]
         l.x = xs
         l.y = ys
         self.displays.append(self.x.plot(l, bg=bg))
         t = self.x.createtext()
-        t.viewport = [template.data.x1, template.data.x2, template.data.y1, template.data.y2]
+        t.viewport = [template.data.x1, template.data.x2,
+                      template.data.y1, template.data.y2]
         t.worldcoordinate = [self.xmin, self.xmax, self.ymin, self.ymax]
         t.color = l.color[0]
         t.x = xstxt
@@ -861,7 +890,7 @@ class Gth(object):
             template = template.name
         try:
             isotemplate = self.x.createtemplate(template)
-        except:
+        except Exception:
             isotemplate = self.x.gettemplate(template)
         self.plotIsos(template, bg=bg)
         if P is None:
@@ -883,7 +912,7 @@ class Gth(object):
                     raise ValueError
                 xs.append(tx)
                 ys.append(ty)
-            except:
+            except Exception:
                 pass
 # if not(MV2.isMA(tx) or MV2.isMA(ty)):
 # xs.append(tx)
@@ -943,7 +972,7 @@ class Gth(object):
             template = template.name
         try:
             isotemplate = self.x.createtemplate(template)
-        except:
+        except Exception:
             isotemplate = self.x.gettemplate(template)
 
         att = dir(isotemplate)
@@ -951,7 +980,7 @@ class Gth(object):
             try:
                 b = getattr(isotemplate, a)
                 setattr(b, 'priority', 0)
-            except:
+            except Exception:
                 pass
 
         isotemplate.data.priority = 1
@@ -982,7 +1011,8 @@ class Gth(object):
 
         ws = Ws(T, P)
         # Seems like we need not ws after 600mb
-        ws = numpy.ma.masked_where(numpy.ma.less(P, self.Pmaxmixingratio * 100.), ws)
+        ws = numpy.ma.masked_where(numpy.ma.less(
+            P, self.Pmaxmixingratio * 100.), ws)
 
         T = T - 273.16
         Tmin, Tmax = vcs.minmax(T)
@@ -1036,7 +1066,7 @@ class Gth(object):
                 dicP[Y] = dicPl[p]
         try:
             ttp = self.x.createtexttable('Plabels')
-        except:
+        except Exception:
             ttp = self.x.gettexttable('Plabels')
         ttp.color = self.isobars.linecolors[0]
         isotemplate.ylabel1.texttable = ttp
@@ -1048,7 +1078,7 @@ class Gth(object):
             dicT[X] = dicTl[t]
         try:
             ttp = self.x.createtexttable('Tlabels')
-        except:
+        except Exception:
             ttp = self.x.gettexttable('Tlabels')
         ttp.color = self.isotherms.linecolors[0]
         isotemplate.xlabel1.texttable = ttp
@@ -1089,17 +1119,22 @@ class Gth(object):
 
         # plot if self.drawisothermsfilled:
         if self.drawisothermsfilled:
-            self.displays.append(self.x.plot(T, isotemplate, self.isothermsfilled, bg=bg))
+            self.displays.append(self.x.plot(
+                T, isotemplate, self.isothermsfilled, bg=bg))
         if self.drawisotherms:
-            self.displays.append(self.x.plot(T, isotemplate, self.isotherms, bg=bg))
+            self.displays.append(self.x.plot(
+                T, isotemplate, self.isotherms, bg=bg))
         if self.drawisobars:
-            self.displays.append(self.x.plot(P, isotemplate, self.isobars, bg=bg))
+            self.displays.append(self.x.plot(
+                P, isotemplate, self.isobars, bg=bg))
         if self.drawdryadiabats:
-            self.displays.append(self.x.plot(Tp, isotemplate, self.dryadiabats, bg=bg))
+            self.displays.append(self.x.plot(
+                Tp, isotemplate, self.dryadiabats, bg=bg))
         if self.drawpseudoadiabats:
             self.plot_pseudo(isotemplate, bg=bg)
         if self.drawmixingratio:
-            self.displays.append(self.x.plot(ws, isotemplate, self.mixingratio, bg=bg))
+            self.displays.append(self.x.plot(
+                ws, isotemplate, self.mixingratio, bg=bg))
         return
 
     # All take args with T in K and P in Pa
@@ -1172,7 +1207,8 @@ class Gth(object):
         n1 = n1.astype('i')
         n2 = (n - n1 * self.windbarbsscales[0]) / self.windbarbsscales[1]
         n2 = n2.astype('i')
-        n3 = (n - n1 * self.windbarbsscales[0] - n2 * self.windbarbsscales[1]) / self.windbarbsscales[2]
+        n3 = (n - n1 * self.windbarbsscales[0] - n2 *
+              self.windbarbsscales[1]) / self.windbarbsscales[2]
         n3 = n3.astype('i')
 
 # print 'n1:',n1
@@ -1186,13 +1222,15 @@ class Gth(object):
                 # Figure out the altitude to plot it (y coord) !
                 dum, Y = self.TP2XY(273, p)
                 lin = self.x.createline()
-                lin.viewport = [template.data.x1, template.data.x2, template.data.y1, template.data.y2]
+                lin.viewport = [template.data.x1, template.data.x2,
+                                template.data.y1, template.data.y2]
                 lin.worldcoordinate = [-1, 1, -1, 1]
                 lin.x = [0, 0]
                 lin.y = [-1, 1]
                 self.displays.append(self.x.plot(lin, bg=bg))
                 lin = self.x.createline()
-                lin.viewport = [template.data.x1, template.data.x2, template.data.y1, template.data.y2]
+                lin.viewport = [template.data.x1, template.data.x2,
+                                template.data.y1, template.data.y2]
                 lin.worldcoordinate = [-1, 1, self.ymin, self.ymax]
                 # Set everything correctly y wise
                 rw = 2 / (self.ymax - self.ymin)
@@ -1200,9 +1238,11 @@ class Gth(object):
                     r = 1.375
                 else:
                     r = .72727272
-                rv = (template.data.x2 - template.data.x1) / (template.data.y2 - template.data.y1)
+                rv = (template.data.x2 - template.data.x1) / \
+                    (template.data.y2 - template.data.y1)
                 rw = 1. / rw
-                x, y = self.make_barb(n[i], d[i], n1[i], n2[i], n3[i], rw * r * rv, Y)
+                x, y = self.make_barb(
+                    n[i], d[i], n1[i], n2[i], n3[i], rw * r * rv, Y)
                 lin.x = x
                 lin.y = y
                 lin.type = ['solid']

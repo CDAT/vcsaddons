@@ -4,6 +4,7 @@ from . import polar
 from . import EzTemplateSrc as EzTemplate  # noqa
 from . import yxvsxfill
 from . import parallelCoordinates
+from . import thermo  # noqa
 
 
 def createyxvsxfill(name=None, source='default', x=None, template=None):

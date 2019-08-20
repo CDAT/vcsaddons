@@ -1,2 +1,4 @@
 https://cdat.llnl.gov/cdat/sample_data
 aa51aa896ead44019335cebec68e7955  clt.nc
+f050c58786ae8f98ce1609fc44e26262 dar.meteo.mod.cam3.era.v31.h0.l3.nrstpt.cp.2000070100.2000080100.tau.12.36.nc 
+1d7e23bed6c9e562eb87d9cdc38b4fab  thermo.nc

@@ -1,9 +1,10 @@
 # Adapted for numpy/ma/cdms2 by convertcdms.py
-import thermo,vcs,cdms2
+from vcsaddons import thermo
+import vcs,cdms2
 import os,sys
 import basetest
 
-class ThermoTest(basetest.BaseGraphicsTest):
+class ThermoTest(basetest.BaseTest):
     def testBasic(self):
 
         f=cdms2.open(vcs.sample_data+'/dar.meteo.mod.cam3.era.v31.h0.l3.nrstpt.cp.2000070100.2000080100.tau.12.36.nc')
