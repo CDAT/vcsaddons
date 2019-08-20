@@ -826,8 +826,8 @@ class Gth(object):
         """
         levs = self.pseudoadiabats.level
         levels = []
-        for l in levs:
-            levels.append(l[0])
+        for l_tmp in levs:
+            levels.append(l_tmp[0])
         # Ok we now have the required levels
         xs = []
         ys = []
@@ -835,10 +835,10 @@ class Gth(object):
         ystxt = []
         txt = []
         for il in range(len(levels)):
-            l = levels[il]
+            l_tmp = levels[il]
             tmpxs = []
             tmpys = []
-            t, p = LiftWet(l + 273.15, self.datawc_y1 * 100.,
+            t, p = LiftWet(l_tmp + 273.15, self.datawc_y1 * 100.,
                            self.Pmaxmixingratio * 100., 25000. / self.detail)
             nt = len(t)
             if il % 3 == 0:
@@ -857,22 +857,22 @@ class Gth(object):
                 if ((i - 1.) / nt < crit1 < i / float(nt)) or ((i - 1.) / nt < crit2 < i / float(nt)):
                     xstxt.append(tx)
                     ystxt.append(ty)
-                    txt.append(str(l))
+                    txt.append(str(l_tmp))
             xs.append(tmpxs)
             ys.append(tmpys)
-        l = self.x.createline()
-        l.color = [self.pseudoadiabats.linecolors[0], ]
-        l.viewport = [template.data.x1, template.data.x2,
-                      template.data.y1, template.data.y2]
-        l.worldcoordinate = [self.xmin, self.xmax, self.ymin, self.ymax]
-        l.x = xs
-        l.y = ys
-        self.displays.append(self.x.plot(l, bg=bg))
+        l_tmp = self.x.createline()
+        l_tmp.color = [self.pseudoadiabats.linecolors[0], ]
+        l_tmp.viewport = [template.data.x1, template.data.x2,
+                          template.data.y1, template.data.y2]
+        l_tmp.worldcoordinate = [self.xmin, self.xmax, self.ymin, self.ymax]
+        l_tmp.x = xs
+        l_tmp.y = ys
+        self.displays.append(self.x.plot(l_tmp, bg=bg))
         t = self.x.createtext()
         t.viewport = [template.data.x1, template.data.x2,
                       template.data.y1, template.data.y2]
         t.worldcoordinate = [self.xmin, self.xmax, self.ymin, self.ymax]
-        t.color = l.color[0]
+        t.color = l_tmp.color[0]
         t.x = xstxt
         t.y = ystxt
         t.string = txt
@@ -1262,7 +1262,7 @@ class Gth(object):
            barbs angle is 60 degrees
            barb depth is .1
 
-        """
+        """  # noqa
         # Intitalize the Drawing, head is at zero
         xs = [0]
         ys = [0]
@@ -1278,30 +1278,30 @@ class Gth(object):
         # Drawing of big barbs
         for i in range(n1):
             # summit
-            l = hinit - bwidth  # legth to the middle of big barb
-            h = numpy.sqrt(bdepth ** 2 + l ** 2)
-            mu = numpy.arctan(bdepth / l)
+            l_tmp = hinit - bwidth  # legth to the middle of big barb
+            h = numpy.sqrt(bdepth ** 2 + l_tmp ** 2)
+            mu = numpy.arctan(bdepth / l_tmp)
             ys.append(h * numpy.sin(d + mu))
             xs.append(h * numpy.cos(d + mu))
 
             # End of barb
-            ys.append((l - bwidth) * numpy.sin(d))
-            xs.append((l - bwidth) * numpy.cos(d))
+            ys.append((l_tmp - bwidth) * numpy.sin(d))
+            xs.append((l_tmp - bwidth) * numpy.cos(d))
             hinit = hinit - 2 * bwidth
         if n1 != 0:
             hinit = hinit + bwidth / 2.
 
         # Ok now the long sticks
         for i in range(n2):
-            l = hinit - bwidth
+            l_tmp = hinit - bwidth
             # Move to begining of next one
-            ys.append(l * numpy.sin(d))
-            xs.append(l * numpy.cos(d))
+            ys.append(l_tmp * numpy.sin(d))
+            xs.append(l_tmp * numpy.cos(d))
 
             # Go to the top one
-            l = hinit
-            h = numpy.sqrt(bdepth ** 2 + l ** 2)
-            mu = numpy.arctan(bdepth / l)
+            l_tmp = hinit
+            h = numpy.sqrt(bdepth ** 2 + l_tmp ** 2)
+            mu = numpy.arctan(bdepth / l_tmp)
             ys.append(h * numpy.sin(d + mu))
             xs.append(h * numpy.cos(d + mu))
 
@@ -1316,15 +1316,15 @@ class Gth(object):
         bwidth = bwidth / 2.
         bdepth = bdepth / 2.
         for i in range(n3):
-            l = hinit - bwidth
+            l_tmp = hinit - bwidth
             # Move to begining of next one
-            ys.append(l * numpy.sin(d))
-            xs.append(l * numpy.cos(d))
+            ys.append(l_tmp * numpy.sin(d))
+            xs.append(l_tmp * numpy.cos(d))
 
             # Go to the top one
-            l = hinit
-            h = numpy.sqrt(bdepth ** 2 + l ** 2)
-            mu = numpy.arctan(bdepth / l)
+            l_tmp = hinit
+            h = numpy.sqrt(bdepth ** 2 + l_tmp ** 2)
+            mu = numpy.arctan(bdepth / l_tmp)
             ys.append(h * numpy.sin(d + mu))
             xs.append(h * numpy.cos(d + mu))
             # Back to begining
