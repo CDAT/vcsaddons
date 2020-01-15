@@ -8,19 +8,24 @@ source:
 
 build:
   number: @BUILD_NUMBER@
+  skip: True  # [win] 
  
 requirements:
   build:
     - {{ compiler("c") }}
   host:
-    - python {{ python }}
-    - setuptools
+    - python
+    - setuptools <=45.0.0
   run:
     - python
     - vcs
     - cdms2
-    - libcdms >=3.1.2
+    - libcdms
     - libgcc
+
+test:
+  imports:
+    - vcsaddons
 
 about:
     home:  http://github.com/cdat/vcsaddons

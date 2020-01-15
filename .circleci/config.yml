@@ -1,209 +1,243 @@
 version: 2
 
-checkout:
-  post:
-    - ./ci-support/checkout_merge_commit.sh
-        
 aliases:
-
   - &setup_miniconda
     name: setup_miniconda
     command: |
-      mkdir -p workspace
-      git clone -b validateNightly --depth 1 git@github.com:CDAT/cdat workspace/cdat
-      python workspace/cdat/scripts/install_miniconda.py -w $WORKDIR -p 'py3'
-      
-  - &create_conda_env
-    name: create_conda_env
+       mkdir -p workspace
+       git clone -b validateNightly git@github.com:CDAT/cdat workspace/cdat
+       # install_miniconda.py installs miniconda3 under $WORKDIR/miniconda
+       python workspace/cdat/scripts/install_miniconda.py -w $WORKDIR -p 'py3'
+
+  - &conda_rerender
+    name: conda_rerender
+    command: |
+       git clone https://github.com/CDAT/conda-recipes.git $WORKDIR/conda-recipes 
+       source $WORKDIR/miniconda/etc/profile.d/conda.sh
+       conda activate base
+       BUILD_SCRIPT="$WORKDIR/conda-recipes/build_tools/conda_build.py"
+       python $BUILD_SCRIPT -w $WORKDIR -l $LAST_STABLE -B 0 -p $PKG_NAME -b $CIRCLE_BRANCH --do_rerender
+
+  - &conda_build
+    name: conda_build
+    command: |
+       source $WORKDIR/miniconda/etc/profile.d/conda.sh
+       conda activate base
+       conda config --add channels conda-forge --force
+       conda config --add channels cdat/label/nightly --force
+       conda config --set channel_priority strict
+       cat ~/.condarc
+       BUILD_SCRIPT="$WORKDIR/conda-recipes/build_tools/conda_build.py"
+       python $BUILD_SCRIPT -w $WORKDIR -p $PKG_NAME --build_version $BUILD_VARIANT_VER --do_build
+
+  - &setup_run_tests
+    name: setup_run_tests
     environment:
-       PKGS: "cdms2 mesalib matplotlib numpy vcs 'proj4<5' testsrunner vtk-cdat"
+       PKGS: "numpy cdat_info libcdms libdrs_f testsrunner"
        CHANNELS: "-c cdat/label/nightly -c conda-forge"
     command: |
-       export PATH=$WORKDIR/miniconda/bin:$PATH
-       conda config --set always_yes yes --set changeps1 no
-       conda update -y -q conda
-       conda config --set anaconda_upload no
-       if [[ $PY_VER = "py2" ]]; then
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python<3' $FFMPEG ${CONDA_COMPILERS}
-       else
-          conda create -q -n $PY_VER $CHANNELS $PKGS 'python>=3.6' $FFMPEG ${CONDA_COMPILERS} $COVERAGE_PKGS
-       fi
-    
-  - &setup_vcsaddons
-    name: setup_vcsaddons
-    command: |
-       export PATH=$WORKDIR/miniconda/bin:$PATH
-       source activate $PY_VER
+       source $WORKDIR/miniconda/etc/profile.d/conda.sh
+       conda activate base
+       conda create -y -n $ENV_NAME --use-local $CHANNELS "$CONDA_PY_VER" $PKG_NAME $PKGS
+       conda activate $ENV_NAME
+       conda list
 
-       if [[ -e $GCC ]]; then
-        env CC=${GCC} LDSHARED="${GCC} ${LDSHARED_FLAGS}" python setup.py install
-       else
-        env CC=${CC} LDSHARED="${CC} ${LDSHARED_FLAGS}" python setup.py install
-       fi
-       rm -rf build
-
-  - &run_vcsaddons_tests
-    name: run_vcsaddons_tests
+  - &run_tests
+    name: run_tests
     command: |
-       export PATH=$WORKDIR/miniconda/bin:$PATH
-       export CDAT_ANONYMOUS_LOG=False
-       source activate $PY_VER
-       mkdir tests_png
-       mkdir tests_html
-       python run_tests.py -v2 -n 2 -H $COVERAGE
-       RESULT=$?
-       echo "*** $PY_VER test result: "$RESULT
-       exit $RESULT
-
-  - &run_coveralls
-    name: run_coveralls
-    command: |
-       export PATH=$WORKDIR/miniconda/bin:$PATH
-       source activate $PY_VER
-       coveralls
-       source deactivate
+       source $WORKDIR/miniconda/etc/profile.d/conda.sh
+       conda activate $ENV_NAME
+       python run_tests.py -H -v2
 
   - &conda_upload
     name: conda_upload
-    environment:
-       CHANNELS: "-c cdat/label/nightly -c conda-forge"
     command: |
-       if [[ $CIRCLE_BRANCH != 'master' ]]; then
+       if [[ $CIRCLE_BRANCH != "master" ]]; then
           exit 0
        fi
-       export PATH=${HOME}/project/$WORKDIR/miniconda/bin:$PATH
-       conda install conda-build anaconda-client
-       conda config --set anaconda_upload no
-       export CONDA_BLD_PATH=`pwd`/conda_build
-       git clone git://github.com/cdat/conda-recipes
-       cd conda-recipes
-       export PKG_NAME=vcsaddons
-       export USER=cdat
-       export VERSION=8.0
-       export LABEL=nightly
-       if [[ -d $PKG_NAME ]]; then
-          rm -rf $PKG_NAME
-       fi
-       ln -s ../recipe $PKG_NAME
-       python ./prep_for_build.py -l $VERSION
-       if [[ $PY_VER = 'py2' ]]; then
-          conda build $PKG_NAME $CHANNELS --python=2.7
-       else
-          conda build $PKG_NAME $CHANNELS --python=3.6
-          conda build $PKG_NAME $CHANNELS --python=3.7
-       fi
-       anaconda -t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL $CONDA_BLD_PATH/$OS/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
+       source $WORKDIR/miniconda/etc/profile.d/conda.sh
+       conda activate base
+       UPLOAD_OPTIONS="-t $CONDA_UPLOAD_TOKEN upload -u $USER -l $LABEL"
+       anaconda $UPLOAD_OPTIONS linux_build/miniconda/conda-bld/linux-64/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
+       anaconda $UPLOAD_OPTIONS macos_build/miniconda/conda-bld/osx-64/$PKG_NAME-$VERSION.`date +%Y*`0.tar.bz2 --force
 
 jobs:
-  macos_vcsaddons_py2:
-    macos:
-      xcode: "9.2.0"
-    environment:
-      WORKDIR: "test_macos_vcsaddons_py2"
-      OS: "osx-64"
-      CONDA_COMPILERS: "clang_osx-64"
-      LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
-      PY_VER: "py2"
-      FFMPEG: "'ffmpeg>=4.1' 'libpng>=1.6.36'"
-    steps:
-      - checkout
-      - run: *setup_miniconda
-      - run: *create_conda_env
-      - run: *setup_vcsaddons
-      - run: *run_vcsaddons_tests
-      - run: *conda_upload
-      - store_artifacts:
-          path: tests_html
-          destination: tests_html
-      - store_artifacts:
-          path: tests_png
-          destination: tests_png
+   macos_setup:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_build
+         PKG_NAME: "vcsaddons"
+         LAST_STABLE: "8.2"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: .
+              paths: 
+                 - macos_build
 
-  macos_vcsaddons_py3:
-    macos:
-      xcode: "9.2.0"
-    environment:
-      WORKDIR: "test_macos_vcsaddons_py3"
-      OS: "osx-64"
-      CONDA_COMPILERS: "clang_osx-64"
-      LDSHARED_FLAGS: "-bundle -undefined dynamic_lookup"
-      PY_VER: "py3"
-      FFMPEG: "'ffmpeg>=4.1' 'libpng>=1.6.36'"
-    steps:
-      - checkout
-      - run: *setup_miniconda
-      - run: *create_conda_env
-      - run: *setup_vcsaddons
-      - run: *run_vcsaddons_tests
-      - run: *conda_upload
-      - store_artifacts:
-          path: tests_html
-          destination: tests_html
-      - store_artifacts:
-          path: tests_png
-          destination: tests_png
+   linux_setup:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vcsaddons"
+         LAST_STABLE: "8.2"
+      steps:
+         - checkout
+         - run: *setup_miniconda
+         - run: *conda_rerender
+         - persist_to_workspace:
+              root: .
+              paths:
+                 - linux_build
 
-  linux_vcsaddons_py2:
-    machine:
-      image: circleci/classic:latest
-    environment:
-      WORKDIR: "test_linux_vcsaddons_py2"
-      OS: "linux-64"
-      CONDA_COMPILERS: "gcc_linux-64"
-      LDSHARED_FLAGS: "-shared -pthread"
-      PY_VER: "py2"
-      FFMPEG: "'ffmpeg>4.0.1'"
-    steps:
-      - checkout
-      - run: *setup_miniconda
-      - run: *create_conda_env
-      - run: *setup_vcsaddons
-      - run: *run_vcsaddons_tests
-      - run: *conda_upload
-      - store_artifacts:
-          path: tests_html
-          destination: tests_html
-      - store_artifacts:
-          path: tests_png
-          destination: tests_png
+   macos_vcsaddons_py2:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_build
+         PKG_NAME: "vcsaddons"
+         ENV_NAME: "test_vcsaddons"
+         CONDA_PY_VER: "python<3"
+         BUILD_VARIANT_VER: "2.7"
+      steps:
+         - checkout
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *setup_run_tests
+         - run: *run_tests
+         - store_artifacts:
+              path: tests_html
+              destination: tests_html
+         - store_artifacts:
+             path: tests_png
+             destination: tests_png
+         - persist_to_workspace:
+              root: .
+              paths:
+                 - macos_build/miniconda/conda-bld/osx-64/vcsaddons*tar.bz2
 
-  linux_vcsaddons_py3:
-    machine:
-      image: circleci/classic:latest
-    environment:
-      WORKDIR: "test_linux_vcsaddons_py3"
-      OS: "linux-64"
-      CONDA_COMPILERS: "gcc_linux-64"
-      LDSHARED_FLAGS: "-shared -pthread"
-      PY_VER: "py3"
-      FFMPEG: "'ffmpeg>4.0.1'"
-      COVERAGE: "-c tests/coverage.json --coverage-from-egg"
-      COVERAGE_PKGS: "coverage coveralls"
-    steps:
-      - checkout
-      - run: *setup_miniconda
-      - run: *create_conda_env
-      - run: *setup_vcsaddons
-      - run: *run_vcsaddons_tests
-      - run: *run_coveralls
-      - run: *conda_upload
-      - store_artifacts:
-          path: tests_html
-          destination: tests_html
-      - store_artifacts:
-          path: tests_png
-          destination: tests_png
+   macos_vcsaddons_py37:
+      macos:
+         xcode: "11.3.0"
+      environment:
+         WORKDIR: /Users/distiller/project/macos_build
+         PKG_NAME: "vcsaddons"
+         ENV_NAME: "test_vcsaddons"
+         CONDA_PY_VER: "python>=3.7,<3.8"
+         BUILD_VARIANT_VER: "3.7"
+      steps:
+         - checkout
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *setup_run_tests
+         - run: *run_tests
+         - store_artifacts:
+              path: tests_html
+              destination: tests_html
+         - store_artifacts:
+             path: tests_png
+             destination: tests_png
+         - persist_to_workspace:
+              root: .
+              paths:
+                 - macos_build/miniconda/conda-bld/osx-64/vcsaddons*tar.bz2
 
+   linux_vcsaddons_py2:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vcsaddons"
+         ENV_NAME: "test_vcsaddons"
+         CONDA_PY_VER: "python<3"
+         BUILD_VARIANT_VER: "2.7"
+      steps:
+         - checkout
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *setup_run_tests
+         - run: *run_tests
+         - store_artifacts:
+              path: tests_html
+              destination: tests_html
+         - store_artifacts:
+             path: tests_png
+             destination: tests_png
+         - persist_to_workspace:
+              root: .
+              paths:
+                 - linux_build/miniconda/conda-bld/linux-64/vcsaddons*tar.bz2
+
+   linux_vcsaddons_py37:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vcsaddons"
+         ENV_NAME: "test_vcsaddons"
+         CONDA_PY_VER: "python>=3.7,<3.8"
+         BUILD_VARIANT_VER: "3.7"
+      steps:
+         - checkout
+         - attach_workspace:
+              at: .
+         - run: *conda_build
+         - run: *setup_run_tests
+         - run: *run_tests
+         - store_artifacts:
+              path: tests_html
+              destination: tests_html
+         - store_artifacts:
+             path: tests_png
+             destination: tests_png
+         - persist_to_workspace:
+              root: .
+              paths:
+                 - linux_build/miniconda/conda-bld/linux-64/vcsaddons*tar.bz2
+
+   upload:
+      machine:
+         image: circleci/classic:latest
+      environment:
+         WORKDIR: /home/circleci/project/linux_build
+         PKG_NAME: "vcsaddons"
+         VERSION: "8.2"
+         USER: "cdat"
+         LABEL: "nightly"
+      steps:
+         - attach_workspace:
+              at: .
+         - run: *conda_upload
 
 workflows:
-  version: 2
-  vcsaddons:
-    jobs:
-      - macos_vcsaddons_py3:
-           requires:
-              - linux_vcsaddons_py3
-      - linux_vcsaddons_py2
-      - linux_vcsaddons_py3:
-           requires:
-              - linux_vcsaddons_py2
+   version: 2
+   vcsaddons:
+      jobs:
+         - macos_setup
+         - linux_setup
+         - macos_vcsaddons_py2:
+              requires:
+                 - macos_setup
+         - macos_vcsaddons_py37:
+              requires:
+                 - macos_setup
+         - linux_vcsaddons_py2:
+              requires:
+                 - linux_setup
+         - linux_vcsaddons_py37:
+              requires:
+                 - linux_setup
+         - upload:
+              requires:
+                 - macos_vcsaddons_py2
+                 - macos_vcsaddons_py37
+                 - linux_vcsaddons_py2
+                 - linux_vcsaddons_py37
 
