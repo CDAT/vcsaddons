@@ -16,12 +16,12 @@ requirements:
   host:
     - python
     - cython
-
   run:
     - python
     - vcs
     - cdms2
     - libcdms
+    - libgcc
 
 test:
   imports:
