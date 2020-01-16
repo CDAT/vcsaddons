@@ -15,6 +15,7 @@ requirements:
     - {{ compiler("c") }}
   host:
     - python
+    - cython
     - setuptools
   run:
     - python
