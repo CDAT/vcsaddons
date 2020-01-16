@@ -20,8 +20,6 @@ requirements:
     - python
     - vcs
     - cdms2
-    - libcdms
-    - libgcc
 
 test:
   imports:
