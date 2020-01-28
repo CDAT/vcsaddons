@@ -3,4 +3,5 @@ if [[ `uname` == "Linux" ]]; then
 else
     export LDSHARED="${LDSHARED} -bundle -undefined dynamic_lookup"
 fi
-env LDSHARED="${CC} ${LDSHARED}" python setup.py install
+export LDSHARED="${CC} ${LDSHARED}"
+LDSHARED=$LDSHARED $PYTHON -m pip install . --no-deps -vv
