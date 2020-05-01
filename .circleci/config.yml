@@ -33,7 +33,7 @@ aliases:
   - &setup_run_tests
     name: setup_run_tests
     environment:
-       PKGS: "matplotlib numpy vcs testsrunner vtk-cdat"
+       PKGS: "matplotlib numpy testsrunner"
        CHANNELS: "-c cdat/label/nightly -c conda-forge"
     command: |
        source $WORKDIR/miniconda/etc/profile.d/conda.sh
