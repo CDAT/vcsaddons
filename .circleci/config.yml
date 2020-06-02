@@ -619,24 +619,24 @@ workflows:
               requires:
                  - linux_vcsaddons_py38
 
-         - macos_vcsaddons_mpich_py36:
-              requires:
-                 - macos_vcsaddons_py36
-         - macos_vcsaddons_mpich_py37:
-              requires:
-                 - macos_vcsaddons_py37
-         - macos_vcsaddons_mpich_py38:
-              requires:
-                 - macos_vcsaddons_py38
-         - linux_vcsaddons_mpich_py36:
-              requires:
-                 - linux_vcsaddons_py36
-         - linux_vcsaddons_mpich_py37:
-              requires:
-                 - linux_vcsaddons_py37
-         - linux_vcsaddons_mpich_py38:
-              requires:
-                 - linux_vcsaddons_py38
+         #- macos_vcsaddons_mpich_py36:
+         #     requires:
+         #        - macos_vcsaddons_py36
+         #- macos_vcsaddons_mpich_py37:
+         #     requires:
+         #        - macos_vcsaddons_py37
+         #- macos_vcsaddons_mpich_py38:
+         #     requires:
+         #        - macos_vcsaddons_py38
+         #- linux_vcsaddons_mpich_py36:
+         #     requires:
+         #        - linux_vcsaddons_py36
+         #- linux_vcsaddons_mpich_py37:
+         #     requires:
+         #        - linux_vcsaddons_py37
+         #- linux_vcsaddons_mpich_py38:
+         #     requires:
+         #        - linux_vcsaddons_py38
 
          - macos_vcsaddons_openmpi_py36:
               requires:
@@ -666,12 +666,12 @@ workflows:
                  - linux_vcsaddons_nompi_py37
                  - linux_vcsaddons_nompi_py38
 
-                 - macos_vcsaddons_mpich_py36
-                 - macos_vcsaddons_mpich_py37
-                 - macos_vcsaddons_mpich_py38
-                 - linux_vcsaddons_mpich_py36
-                 - linux_vcsaddons_mpich_py37
-                 - linux_vcsaddons_mpich_py38
+                 #- macos_vcsaddons_mpich_py36
+                 #- macos_vcsaddons_mpich_py37
+                 #- macos_vcsaddons_mpich_py38
+                 #- linux_vcsaddons_mpich_py36
+                 #- linux_vcsaddons_mpich_py37
+                 #- linux_vcsaddons_mpich_py38
 
                  - macos_vcsaddons_openmpi_py36
                  - macos_vcsaddons_openmpi_py37
