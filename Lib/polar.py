@@ -519,9 +519,9 @@ class Gpo(vcsaddons.core.VCSaddon):
             canvas.plot(t_ticks, **plot_kwargs)
             del vcs.elements["line"][t_ticks.name]
             if t_labels is not None:
-                for l in t_labels:
-                    canvas.plot(l, **plot_kwargs)
-                    del vcs.elements["textcombined"][l.name]
+                for el in t_labels:
+                    canvas.plot(el, **plot_kwargs)
+                    del vcs.elements["textcombined"][el.name]
 
         values = vcs.createmarker()
         values.type = self.markertypes
