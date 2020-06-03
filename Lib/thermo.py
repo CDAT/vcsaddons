@@ -2,7 +2,6 @@
 import MV2
 import cdms2
 import genutil
-import unidata
 import vcs
 import numpy
 from vcs import VCS_validation_functions
@@ -159,7 +158,7 @@ def getPvalues(T):
     P = P.clone()
     try:  # tries to convert to Pa
         for i in range(len(P)):
-            u = unidata.udunits(P[i], P.units)
+            u = genutil.udunits(P[i], P.units)
             P[i] = u.to("Pa").value
     except Exception:
         pass
@@ -1197,7 +1196,7 @@ class Gth(object):
             P = P.clone()
             try:  # tries to convert to Pa
                 for i in range(len(P)):
-                    uni = unidata.udunits(P[i], P.units)
+                    uni = genutil.udunits(P[i], P.units)
                     P[i] = uni.to("Pa").value
             except Exception:
                 pass
