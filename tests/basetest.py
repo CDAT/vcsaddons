@@ -34,7 +34,7 @@ class BaseTest(unittest.TestCase):
         self.orig_cwd = os.getcwd()
         self.pngsdir = "tests_png"
         if not os.path.exists(self.pngsdir):
-            os.makedirs(self.pngsdir)
+            os.makedirs(self.pngsdir, exist_ok=True)
         self.basedir = os.path.join("tests", "baselines")
         self.basedatadir = os.path.join("tests", "data")
         self.M = EzTemplate.Multi(rows=4, columns=3, x=self.x)
