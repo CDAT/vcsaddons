@@ -70,7 +70,7 @@ aliases:
        source $BASH_ENV
        source $WORKDIR/miniconda/etc/profile.d/conda.sh
        UPLOAD_OPTIONS="conda_upload_token=$CONDA_UPLOAD_TOKEN label=$LABEL"
-       make conda-upload $UPLOAD_OPTIONS conda=$WORKDIR/miniconda/bin/conda artifact_dir="artifacts/*/"
+       make conda-upload workdir=$WORKDIR $UPLOAD_OPTIONS conda=$WORKDIR/miniconda/bin/conda artifact_dir="artifacts/*/"
 
 executors:
    linux:
