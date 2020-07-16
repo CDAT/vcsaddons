@@ -38,7 +38,7 @@ aliases:
        conda activate base
        os=`uname`
        artifacts_dir="artifacts/artifacts.${os}.py_${PY_VER}"
-       make conda-build workdir=$WORKDIR artifact_dir=$artifacts_dir build_version=$PY_VER
+       make conda-build workdir=$WORKDIR artifact_dir=$PWD/$artifacts_dir build_version=$PY_VER
 
   - &setup_run_tests
     name: setup_run_tests
@@ -65,7 +65,7 @@ aliases:
        source $BASH_ENV
        source $WORKDIR/miniconda/etc/profile.d/conda.sh
        UPLOAD_OPTIONS="conda_upload_token=$CONDA_UPLOAD_TOKEN"
-       make conda-upload workdir=$WORKDIR $UPLOAD_OPTIONS artifact_dir="artifacts/*/"
+       make conda-upload workdir=$WORKDIR $UPLOAD_OPTIONS artifact_dir="$PWD/artifacts/*/"
 
 executors:
    linux:
@@ -156,8 +156,7 @@ workflows:
               matrix:
                  parameters:
                     os: [ linux, macos ]
-#                    py_ver: [ "3.6", "3.7", "3.8" ]
-                    py_ver: [ "3.7", "3.8" ]
+                    py_ver: [ "3.6", "3.7", "3.8" ]
 #                    libnetcdf: [ "nompi", "mpi_openmpi", "mpi_mpich" ]
                     libnetcdf: [ "nompi", "mpi_openmpi" ]
               name: test-<< matrix.os >>-<< matrix.py_ver >>-<< matrix.libnetcdf >>
