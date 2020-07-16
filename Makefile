@@ -1,5 +1,5 @@
 .PHONY: conda-info conda-list setup-build setup-tests conda-rerender \
-	conda-build conda-upload conda-dump-env conda-cp-output get_testdata \
+	conda-build conda-upload conda-dump-env \
 	run-tests run-coveralls
 
 SHELL = /bin/bash
@@ -8,7 +8,7 @@ os = $(shell uname)
 pkg_name = vcsaddons
 repo_name = vcsaddons
 
-user = cdat
+user ?= cdat
 label ?= nightly 
 
 build_script = conda-recipes/build_tools/conda_build.py
@@ -31,6 +31,8 @@ extra_channels ?= cdat/label/nightly conda-forge
 conda ?= $(or $(CONDA_EXE),$(shell find /opt/*conda*/bin $(HOME)/*conda* -type f -iname conda))
 conda_env_filename ?= spec-file
 
+artifact_dir ?= $(PWD)/artifacts
+
 ifeq ($(workdir),)
 ifeq ($(wildcard $(PWD)/.tempdir),)
 workdir = $(shell mktemp -d -t "build_$(pkg_name).XXXXXXXX")
@@ -41,8 +43,6 @@ workdir := $(shell cat $(PWD)/.tempdir)
 endif
 
 $(info $(workdir))
-
-artif_dir = $(workdir)/$(artifact_dir)
 
 build_version ?= 3.7
 
@@ -55,7 +55,7 @@ conda_recipes_branch ?= master
 conda_base = $(patsubst %/bin/conda,%,$(conda))
 conda_activate = $(conda_base)/bin/activate
 
-conda_build_extra = --copy_conda_package $(artif_dir)/
+conda_build_extra = --copy_conda_package $(artifact_dir)/
 
 ifndef $(local_repo)
 local_repo = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -87,20 +87,20 @@ conda-rerender: setup-build
 		--conda_activate $(conda_activate)
 
 conda-build:
-	mkdir -p $(artif_dir)
+	mkdir -p $(artifact_dir)
 	python $(workdir)/$(build_script) -w $(workdir) -p $(pkg_name) --build_version $(build_version) \
 		--do_build --conda_env $(conda_build_env) --extra_channels $(extra_channels) \
 		--conda_activate $(conda_activate) $(conda_build_extra)
 
 conda-upload:
 	source $(conda_activate) $(conda_build_env); \
-		anaconda -t $(conda_upload_token) upload -u $(user) -l $(label) --force $(artif_dir)/*.tar.bz2
+		anaconda -t $(conda_upload_token) upload -u $(user) -l $(label) --force $(artifact_dir)/*.tar.bz2
 
 
 conda-dump-env:
-	mkdir -p $(artif_dir)
+	mkdir -p $(artifact_dir)
 
-	source $(conda_activate) $(conda_test_env); conda list --explicit > $(artif_dir)/$(conda_env_filename).txt
+	source $(conda_activate) $(conda_test_env); conda list --explicit > $(artifact_dir)/$(conda_env_filename).txt
 
 run-tests:
 	source $(conda_activate) $(conda_test_env); python run_tests.py -H -v2
