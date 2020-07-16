@@ -93,6 +93,8 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
+         - run: ls -l artifacts
+         - run: ls -l artifacts/artifacts*
          - persist_to_workspace:
               root: .
               paths:
@@ -117,8 +119,10 @@ jobs:
               at: .
          - run: echo "LIBNETCDF=$LIBNETCDF" >> $BASH_ENV
          - run: *setup_env
-         - run: *setup_run_tests
-         - run: *run_tests
+         #- run: *setup_run_tests
+         #- run: *run_tests
+         - run: ls -l artifacts
+         - run: ls -l artifacts/artifacts*
          - store_artifacts:
               path: tests_html
               destination: tests_html
@@ -152,7 +156,8 @@ workflows:
               matrix:
                  parameters:
                     os: [ linux, macos ]
-                    py_ver: [ "3.6", "3.7", "3.8" ]
+#                    py_ver: [ "3.6", "3.7", "3.8" ]
+                    py_ver: [ "3.7", "3.8" ]
 #                    libnetcdf: [ "nompi", "mpi_openmpi", "mpi_mpich" ]
                     libnetcdf: [ "nompi", "mpi_openmpi" ]
               name: test-<< matrix.os >>-<< matrix.py_ver >>-<< matrix.libnetcdf >>
