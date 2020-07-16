@@ -93,8 +93,6 @@ jobs:
          - run: *setup_miniconda
          - run: *conda_rerender
          - run: *conda_build
-         - run: ls -l artifacts
-         - run: ls -l artifacts/artifacts*
          - persist_to_workspace:
               root: .
               paths:
@@ -119,10 +117,8 @@ jobs:
               at: .
          - run: echo "LIBNETCDF=$LIBNETCDF" >> $BASH_ENV
          - run: *setup_env
-         #- run: *setup_run_tests
-         #- run: *run_tests
-         - run: ls -l artifacts
-         - run: ls -l artifacts/artifacts*
+         - run: *setup_run_tests
+         - run: *run_tests
          - store_artifacts:
               path: tests_html
               destination: tests_html
@@ -166,6 +162,6 @@ workflows:
          - upload:
               requires:
                  - test
-#              filters:
-#                 branches:
-#                    only: master
+              filters:
+                 branches:
+                    only: master
