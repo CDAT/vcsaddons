@@ -13,7 +13,9 @@ p = Popen(
     stderr=PIPE)
 try:
     descr = p.stdout.readlines()[0].strip().decode("utf-8")
+    print("DEBUG...descr: {d}".format(d=descr))
     Version = "-".join(descr.split("-")[:-2])
+    print("DEBUG...Version: {v}".format(v=Version))
     if Version == "":
         Version = descr
 except:
