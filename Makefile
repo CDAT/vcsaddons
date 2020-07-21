@@ -50,8 +50,7 @@ ifneq ($(coverage),)
 coverage = -c tests/coverage.json --coverage-from-egg
 endif
 
-#conda_recipes_branch ?= master
-conda_recipes_branch ?= for_release
+conda_recipes_branch ?= master
 
 conda_base = $(patsubst %/bin/conda,%,$(conda))
 conda_activate = $(conda_base)/bin/activate
