@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from setuptools import setup, Extension
 from subprocess import Popen, PIPE
 
