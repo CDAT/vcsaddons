@@ -17,6 +17,7 @@ requirements:
     - python
     - pip
     - cython
+    - setuptools
   run:
     - python
     - vcs
