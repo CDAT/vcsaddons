@@ -4,7 +4,7 @@ package:
 
 source:
   url: https://github.com/CDAT/vcsaddons/archive/v8.2.1.rc1.tar.gz
-  sha256: 14d23cc0cb10a60df8d5825bf416f16193be4614687868bf53689163962725e5
+  sha256: b0606defa460b1e16708d1ed1f15134e6589f1bb2bece4828f453bf5bacd2a77
 
 build:
   number: @BUILD_NUMBER@
