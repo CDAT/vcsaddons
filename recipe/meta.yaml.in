@@ -1,10 +1,10 @@
 package:
     name: vcsaddons
-    version: "@VERSION@"
+    version: "8.2.1.rc1"
 
 source:
-    git_rev: @UVCDAT_BRANCH@
-    git_url: https://github.com/cdat/vcsaddons.git
+  url: https://github.com/CDAT/vcsaddons/archive/v8.2.1.rc1.tar.gz
+  sha256: 14d23cc0cb10a60df8d5825bf416f16193be4614687868bf53689163962725e5
 
 build:
   number: @BUILD_NUMBER@
