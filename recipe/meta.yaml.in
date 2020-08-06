@@ -1,6 +1,6 @@
 package:
     name: vcsaddons
-    version: "@VERSION@"
+    version: 8.2.1
 
 source:
   url: https://github.com/CDAT/vcsaddons/archive/v8.2.1.tar.gz
